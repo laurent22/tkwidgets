@@ -11,6 +11,8 @@ ilog('Testing');
 
 
 
+const Renderer = require('./src/framework/Renderer.js');
+const RootWidget = require('./src/widgets/RootWidget.js');
 const ListWidget = require('./src/widgets/ListWidget.js');
 const HLayoutWidget = require('./src/widgets/HLayoutWidget.js');
 const PageWidget = require('./src/widgets/PageWidget.js');
@@ -46,7 +48,6 @@ for (var i = 0; i < 10000; i++) {
 }
 
 
-//const renderer = new Renderer(term);
 
 
 const listWidget1 = new ListWidget(term);
@@ -80,11 +81,13 @@ layout.render();
 
 listWidget1.focus();
 
-const page = new PageWidget(term);
+//const page = new PageWidget(term);
 
-page.addWidget(layout);
+//page.addWidget(layout);
 
-page.hide();
+//page.hide();
+
+const renderer = new Renderer(term);
 
 
 term.grabInput();
