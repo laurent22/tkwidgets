@@ -8,23 +8,66 @@ class BaseWidget {
 
 		this.id_ = BaseWidget.id_++;
 		this.term_ = term;
-		this.location_ = { x: 0, y: 0 };
+		this.location_ = { x: 1, y: 1 };
+		this.sizeHint_ = { width: 20, height: 10 };
 		this.size_ = { width: null, height: null };
+		this.style_ = {};
 		this.invalidated_ = true;
 		this.renderTimeoutId_ = null;
+		this.parent_ = null;
+		this.shown_ = true;
 
 		this.term_.on('key', (name, matches, data) => {
 			if (!this.hasKeyboard()) return;
 			this.onKey(name, matches, data);
 		});
 
-		this.tabOrder_ = null;
-
-		BaseWidget.focusManager_.register(this);
+		if (this.canHaveFocus()) BaseWidget.focusManager_.register(this);
 	}
 
 	id() {
 		return this.id_;
+	}
+
+	parent() {
+		return this.parent_;
+	}
+
+	setParent(v) {
+		if (v === this.parent_) return;
+		this.parent_ = v;
+		this.invalidate();
+	}
+
+	show(doShow) {
+		if (typeof doShow === 'undefined') doShow = true;
+		if (this.shown_ === doShow) return;
+		this.shown_ = doShow;
+		this.invalidate();
+	}
+
+	hide() {
+		this.show(false);
+	}
+
+	shown() {
+		return this.shown_;
+	}
+
+	visible() {
+		return this.parent() ? this.parent().shown() : this.shown();
+	}
+
+	style() {
+		return this.style_;
+	}
+
+	setStyle(s) {
+		this.style_ = s;
+	}
+
+	canHaveFocus() {
+		return true;
 	}
 
 	focus() {
@@ -52,11 +95,11 @@ class BaseWidget {
 	}
 
 	width() {
-		return this.size_.width;
+		return this.size_.width === null ? this.sizeHint_.width : this.size_.width;
 	}
 
 	height() {
-		return this.size_.height;
+		return this.size_.height === null ? this.sizeHint_.height : this.size_.height;
 	}
 
 	setHeight(v) {
@@ -96,15 +139,7 @@ class BaseWidget {
 
 	invalidate() {
 		this.invalidated_ = true;
-
 		this.renderIfNeeded();
-
-		// if (!this.renderTimeoutId_) {
-		// 	this.renderTimeoutId_ = setTimeout(() => {
-		// 		this.renderTimeoutId_ = null;
-		// 		this.renderIfNeeded();
-		// 	}, 30 / 10);
-		// }
 	}
 
 	invalidated() {
@@ -113,17 +148,22 @@ class BaseWidget {
 
 	renderIfNeeded() {
 		if (!this.invalidated()) return;
-		this.render();		
-	}
-
-	render() {
-		if (this.renderTimeoutId_) {
-			clearTimeout(this.renderTimeoutId_);
-			this.renderTimeoutId_ = null;
+		if (!this.shown()) {
+			this.clear();
+		} else {
+			this.render();
 		}
-
 		this.invalidated_ = false;
 	}
+
+	clear() {
+		for (let y = 0; y < this.height(); y++) {
+			this.term().moveTo(this.x(), this.y() + y);
+			this.term().delete(this.width());
+		}
+	}
+
+	render() {}
 
 };
 

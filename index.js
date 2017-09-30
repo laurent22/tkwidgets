@@ -2,7 +2,7 @@
 
 
 const fs = require('fs');
-function ilog(s) {
+global.ilog = function(s) {
 	fs.appendFileSync('log.txt', s + "\n");
 }
 
@@ -12,6 +12,8 @@ ilog('Testing');
 
 
 const ListWidget = require('./src/widgets/ListWidget.js');
+const HLayoutWidget = require('./src/widgets/HLayoutWidget.js');
+const PageWidget = require('./src/widgets/PageWidget.js');
 
 
 
@@ -22,6 +24,9 @@ const term = tk.terminal;
 
 term.fullscreen();
 term.hideCursor();
+
+// console.info(term.width, term.height);
+// process.exit();
 
 let items = [
 	{ label: "un", },
@@ -41,22 +46,45 @@ for (var i = 0; i < 10000; i++) {
 }
 
 
-const listWidget = new ListWidget(term);
-listWidget.setLocation(1,1);
-listWidget.setItems(items);
-listWidget.setHeight(5);
-listWidget.render();
+//const renderer = new Renderer(term);
 
+
+const listWidget1 = new ListWidget(term);
+listWidget1.setLocation(1,1);
+listWidget1.setItems(items);
+listWidget1.setHeight(5);
+listWidget1.setStyle({ borderBottomWidth: 1 });
 
 const listWidget2 = new ListWidget(term);
 listWidget2.setLocation(20,2);
 listWidget2.setItems(items);
+listWidget2.setStyle({ borderTopWidth: 1 });
 listWidget2.setHeight(10);
-listWidget2.render();
 
+const layout = new HLayoutWidget(term);
 
-listWidget.focus();
+layout.addWidget(listWidget1, {
+	type: 'stretch',
+	factor: 1,
+});
 
+layout.addWidget(listWidget2, {
+	type: 'stretch',
+	factor: 1,
+});
+
+layout.setWidth(term.width);
+layout.setHeight(term.height);
+
+layout.render();
+
+listWidget1.focus();
+
+const page = new PageWidget(term);
+
+page.addWidget(layout);
+
+page.hide();
 
 
 term.grabInput();

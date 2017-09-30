@@ -1,4 +1,5 @@
 const BaseWidget = require('./BaseWidget.js');
+const termutils = require('../framework/termutils.js');
 
 class ListWidget extends BaseWidget {
 
@@ -9,6 +10,7 @@ class ListWidget extends BaseWidget {
 		this.currentIndex_ = -1;
 		this.topIndex_ = 0;
 		this.itemMaxWidth_ = null;
+		this.separatorLine_ = 'none';
 	}
 
 	onKey(name, matches, data) {
@@ -19,13 +21,20 @@ class ListWidget extends BaseWidget {
 		}
 	}
 
+	innerHeight() {
+		const s = this.style();
+		let output = this.height();
+		if (s.borderTopWidth) output--;
+		if (s.borderBottomWidth) output--;
+		return output;
+	}
+
 	topIndex() {
 		return this.topIndex_;
 	}
 
 	bottomIndex() {
-		if (this.height() === null) return this.items_.length - 1;
-		return this.topIndex_ + this.height() - 1;
+		return this.topIndex_ + this.innerHeight() - 1;
 	}
 
 	setTopIndex(v) {
@@ -38,14 +47,12 @@ class ListWidget extends BaseWidget {
 	}
 
 	setBottomIndex(v) {
-		if (this.height() === null) return;
-		this.setTopIndex(v - this.height() + 1);
+		this.setTopIndex(v - this.innerHeight() + 1);
 	}
 
 	maxTopIndex() {
-		if (this.height() === null) return 0;
-		if (this.items_.length <= this.height()) return 0;
-		return this.items_.length - this.height();
+		if (this.items_.length <= this.innerHeight()) return 0;
+		return this.items_.length - this.innerHeight();
 	}
 
 	indexIsOffView(index) {
@@ -114,15 +121,20 @@ class ListWidget extends BaseWidget {
 	}
 
 	render() {
-		super.render();
-
 		const term = this.term();
 		term.moveTo(this.x(), this.y());
 
 		let cursorX = this.x();
 		let cursorY = this.y();
-		let itemWidth = this.width() !== null ? this.width() : this.itemMaxWidth();
+		let itemWidth = this.width();
 		let viewHeight = 0;
+
+		const hLineChar = this.hasFocus() ? '=' : '-';
+
+		if (this.style().borderTopWidth) {
+			termutils.drawLine(term, cursorX, cursorY, itemWidth, hLineChar);
+			cursorY++;
+		}
 
 		for (let i = this.topIndex(); i <= this.bottomIndex(); i++) {
 			let item = this.items_[i];
@@ -132,14 +144,13 @@ class ListWidget extends BaseWidget {
 			if (i == this.currentIndex()) {
 				if (this.hasKeyboard()) {
 					term.bgWhite();
-					term.black();	
+					term.black();
 				} else {
 					term.bgColorGrayscale(125);
 					term.black();
 				}
 			} else {
-				term.bgDefaultColor();
-				term.defaultColor();	
+				term.styleReset();
 			}
 
 			term(this.formatItemLabel(item.label, itemWidth));
@@ -147,15 +158,15 @@ class ListWidget extends BaseWidget {
 			cursorY++;
 			viewHeight++;
 
-			if (this.height() !== null && viewHeight > this.height()) {
+			if (viewHeight > this.innerHeight()) {
 				break;
 			}
 		}
 
-		if (this.hasFocus()) {
-			term('**');
-		} else {
-			term('  ');
+		if (this.style().borderBottomWidth) {
+			term.styleReset();
+			termutils.drawLine(term, cursorX, cursorY, itemWidth, hLineChar);
+			cursorY++;
 		}
 	}
 
