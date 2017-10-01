@@ -8,12 +8,16 @@ global.ilog = function(s) {
 }
 
 
+ilog('=======================================================');
+
+
 const termutils = require('./src/framework/termutils.js');
 const Renderer = require('./src/framework/Renderer.js');
 const ListWidget = require('./src/widgets/ListWidget.js');
 const ConsoleWidget = require('./src/widgets/ConsoleWidget.js');
 const HLayoutWidget = require('./src/widgets/HLayoutWidget.js');
 const ViewWidget = require('./src/widgets/ViewWidget.js');
+const WindowWidget = require('./src/widgets/WindowWidget.js');
 
 
 
@@ -65,78 +69,84 @@ async function main() {
 
 
 
-	const rootWidget = new ViewWidget();
-	rootWidget.setName('rootWidget');
-	rootWidget.setWidth(term.width);
-	rootWidget.setHeight(term.height);
-
-	const listWidget1 = new ListWidget();
-	listWidget1.setItems(items);
-	listWidget1.setName('listWidget1');
-
-	const listWidget2 = new ListWidget();
-	listWidget2.setItems(items2);
-	listWidget2.setName('listWidget2');
-
-	const consoleWidget = new ConsoleWidget();
-	consoleWidget.setName('consoleWidget');
-	consoleWidget.setHeight(5);
-	consoleWidget.setLocation(1, 15);
-
-	const listLayout = new HLayoutWidget();
-	listLayout.setWidth(term.width);
-	listLayout.setHeight(term.height);
-	listLayout.addChild(listWidget1, { type: 'stretch', factor: 1 });
-	listLayout.addChild(listWidget2, { type: 'stretch', factor: 1 });
-
-	rootWidget.addChild(listLayout);
-	rootWidget.addChild(consoleWidget);
-
-	renderer = new Renderer(term, rootWidget);
-	renderer.start();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	// const rootWidget = new ViewWidget();
 	// rootWidget.setName('rootWidget');
+	// rootWidget.setWidth(term.width);
+	// rootWidget.setHeight(term.height);
 
 	// const listWidget1 = new ListWidget();
 	// listWidget1.setItems(items);
 	// listWidget1.setName('listWidget1');
 
 	// const listWidget2 = new ListWidget();
-	// listWidget2.setLocation(25, 5);
 	// listWidget2.setItems(items2);
 	// listWidget2.setName('listWidget2');
 
-	// const view1 = new ViewWidget();
-	// view1.addChild(listWidget1);
-	// view1.setName('view1');
+	// const consoleWidget = new ConsoleWidget();
+	// consoleWidget.setName('consoleWidget');
+	// consoleWidget.setHeight(5);
+	// consoleWidget.setLocation(1, 15);
 
-	// const view2 = new ViewWidget();
-	// view2.addChild(listWidget2);
-	// view2.setName('view2');
-	// view2.hide();
+	// const listLayout = new HLayoutWidget();
+	// listLayout.setWidth(term.width);
+	// listLayout.setHeight(term.height);
+	// listLayout.addChild(listWidget1, { type: 'stretch', factor: 1 });
+	// listLayout.addChild(listWidget2, { type: 'stretch', factor: 1 });
 
-	// rootWidget.addChild(view1);
-	// rootWidget.addChild(view2);
+	// rootWidget.addChild(listLayout);
+	// rootWidget.addChild(consoleWidget);
 
 	// renderer = new Renderer(term, rootWidget);
 	// renderer.start();
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	const rootWidget = new ViewWidget();
+	rootWidget.setName('rootWidget');
+
+	const listWidget1 = new ListWidget();
+	listWidget1.setItems(items);
+	listWidget1.setName('listWidget1');
+
+	const listWidget2 = new ListWidget();
+	listWidget2.setLocation(25, 5);
+	listWidget2.setItems(items2);
+	listWidget2.setName('listWidget2');
+
+	const listWidget3 = new ListWidget();
+	listWidget3.setLocation(3, 20);
+	listWidget3.setItems(items2);
+	listWidget3.setName('listWidget3');
+
+	const win1 = new WindowWidget();
+	win1.addChild(listWidget1);
+	win1.addChild(listWidget2);
+	win1.setName('win1');
+
+	const win2 = new WindowWidget();
+	win2.addChild(listWidget3);
+	win2.setName('win2');
+
+	rootWidget.addChild(win1);
+	rootWidget.addChild(win2);
+
+	renderer = new Renderer(term, rootWidget);
+	renderer.start();
+
+	win1.activate();
 
 
 
@@ -160,16 +170,16 @@ async function main() {
 			process.exit();
 		}
 
-		// if (name == 't') {
-		// 	ilog('=======================');
-		// 	if (view1.shown()) {
-		// 		view1.hide();
-		// 		view2.show();
-		// 	} else {
-		// 		view1.show();
-		// 		view2.hide();
-		// 	}
-		// }
+		if (name == 't') {
+			if (win1.isActiveWindow()) {
+				win2.activate();
+			} else {
+				win1.activate();
+			}
+
+			ilog('WIN1: ' + win1.isActiveWindow());
+			ilog('WIN2: ' + win2.isActiveWindow());
+		}
 	});
 }
 

@@ -22,24 +22,44 @@ class BaseWidget {
 	}
 
 	onTermReady() {
-		ilog('onTermReady: ' + this.widgetType() + ' ' + this.id());
+		ilog('onTermReady: ' + this.name() + ' ' + this.canHaveFocus());
 
-		if (!BaseWidget.focusManager_) BaseWidget.focusManager_ = new FocusManager(this.term());
+		//if (!BaseWidget.focusManager_) BaseWidget.focusManager_ = new FocusManager(this.term());
 
 		if (this.canHaveFocus()) {
 			this.term().on('key', (name, matches, data) => {
+				ilog('HAS : ' + this.hasKeyboard() + ', ' + this.hasFocus());
 				if (!this.hasKeyboard()) return;
 				this.onKey(name, matches, data);
 			});
 
-			BaseWidget.focusManager_.register(this);
+			//BaseWidget.focusManager_.register(this);
 		}
 
 		for (let i = 0; i < this.children_.length; i++) {
 			if (this.lifeCycleState() == 'created') this.children_[i].onTermReady();
 		}
 
+		if (this.canHaveFocus() && !this.window().focusedWidget()) {
+			this.focus();
+		}
+
 		this.lifeCycleState_ = 'ready';
+	}
+
+	isActiveWindow() {
+		let win = this.window();
+		return win ? win.isActiveWindow() : false;
+	}
+
+	window() {
+		if (this.isWindow()) return this;
+		if (!this.parent()) return null;
+		return this.parent().window();
+	}
+
+	isWindow() {
+		return false;
 	}
 
 	lifeCycleState() {
@@ -103,7 +123,7 @@ class BaseWidget {
 		if (typeof doShow === 'undefined') doShow = true;
 		if (this.shown_ === doShow) return;
 		this.shown_ = doShow;
-		if (BaseWidget.focusManager_) BaseWidget.focusManager_.updateFocusedWidget();
+		//if (BaseWidget.focusManager_) BaseWidget.focusManager_.updateFocusedWidget();
 		this.invalidate();
 	}
 
@@ -134,19 +154,29 @@ class BaseWidget {
 	}
 
 	focus() {
-		if (BaseWidget.focusManager_) BaseWidget.focusManager_.focus(this);
+		const w = this.window();
+		if (!w) return;
+		w.focusWidget(this);
+		//if (BaseWidget.focusManager_) BaseWidget.focusManager_.focus(this);
 	}
 
 	blur() {
-		if (BaseWidget.focusManager_) BaseWidget.focusManager_.blur(this);
+		const w = this.window();
+		if (!w) return;
+		w.blurWidget(this);
+		//if (BaseWidget.focusManager_) BaseWidget.focusManager_.blur(this);
 	}
 
 	hasFocus() {
-		return BaseWidget.focusManager_.hasFocus(this);
+		const w = this.window();
+		return w && w.widgetHasFocus(this);
+		//return BaseWidget.focusManager_.hasFocus(this);
 	}
 
 	hasKeyboard() {
-		return BaseWidget.focusManager_.hasKeyboard(this);
+		const w = this.window();
+		return w && w.widgetHasKeyboard(this);
+		//return BaseWidget.focusManager_.hasKeyboard(this);
 	}
 
 	term() {

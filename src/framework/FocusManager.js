@@ -4,44 +4,12 @@ class FocusManager {
 		this.term_ = term;
 		this.focusedWidget_ = null;
 		this.widgets_ = [];
-		this.mode_ = 'widget';
 
 		this.term_.on('key', (name, matches, data) => {
 			if (name === 'TAB') {
 				this.focus(this.nextTabWidget());
 			}
-
-			// if (name === 'ESCAPE') {
-			// 	this.setMode('select');
-			// }
-
-			// if (this.mode() == 'select') {
-			// 	if (name === 'TAB') {
-			// 		this.focus(this.nextTabWidget());
-			// 	}
-
-			// 	if (name === 'ENTER') {
-			// 		this.setMode('widget');
-			// 	}
-			// }
 		});
-	}
-
-	mode() {
-		return this.mode_;
-	}
-
-	setMode(v) {
-		if (v === this.mode_) return;
-		this.mode_ = v;
-
-		if (this.focusedWidget_) {
-			if (this.mode_ == 'select') {
-				this.focusedWidget_.onLostKeyboard();
-			} else {
-				this.focusedWidget_.onGotKeyboard();
-			}
-		}
 	}
 
 	nextTabWidget() {
@@ -88,7 +56,7 @@ class FocusManager {
 	}
 
 	hasKeyboard(widget) {
-		return this.hasFocus(widget) && this.mode() == 'widget' && widget.visible();
+		return this.hasFocus(widget) && widget.visible();
 	}
 
 	focus(widget) {
