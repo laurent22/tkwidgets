@@ -142,6 +142,7 @@ async function main() {
 	win1.addChild(listWidget2);
 	win1.addChild(consoleWidget);
 	win1.setName('win1');
+	win1.setLocation(2,2);
 
 	const win2 = new WindowWidget();
 	win2.addChild(listWidget3);

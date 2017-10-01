@@ -54,19 +54,19 @@ class HLayoutWidget extends LayoutWidget {
 	render() {
 		const items = this.calculateSizes();
 		const term = this.term();
-		let cursorX = this.x();
-		let cursorY = this.y();
+		let x = this.absoluteX();
+		let y = this.absoluteY();
 		const layoutWidth = this.width();
 
 		for (let i = 0; i < items.length; i++) {
 			const item = items[i];
 
-			term.moveTo(cursorX, cursorY);
+			term.moveTo(x, y);
 
-			item.widget.setLocation(cursorX, cursorY);
+			item.widget.setLocation(x, y);
 			item.widget.setWidth(item.width);
 			
-			cursorX += item.width;
+			x += item.width;
 		}
 	}
 

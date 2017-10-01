@@ -30,8 +30,8 @@ class ConsoleWidget extends BaseWidget {
 
 		this.clear();
 
-		let x = this.x();
-		let y = this.y();
+		let x = this.absoluteX();
+		let y = this.absoluteY();
 
 		let topBufferLineIndex = this.buffer_.length - (this.innerHeight() - 1);
 		if (topBufferLineIndex < 0) topBufferLineIndex = 0;
@@ -45,9 +45,10 @@ class ConsoleWidget extends BaseWidget {
 			y++;
 		}
 
-		if (this.hasFocus()) {
-			term.moveTo(x, y);
-			term('> ');
+		term.moveTo(x, y);
+		term('> ');
+
+		if (this.hasFocus()) {	
 			const cursorWasShown = termutils.cursorShown(term);
 			termutils.showCursor(term);
 

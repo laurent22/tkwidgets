@@ -130,8 +130,8 @@ class ListWidget extends BaseWidget {
 
 		//requestCursorLocation
 
-		let cursorX = this.x();
-		let cursorY = this.y();
+		let cursorX = this.absoluteX();
+		let cursorY = this.absoluteY();
 		let itemWidth = this.width();
 		let viewHeight = 0;
 

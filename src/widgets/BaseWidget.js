@@ -191,6 +191,16 @@ class BaseWidget {
 		return this.location_.y;
 	}
 
+	absoluteX() {
+		const p = this.parent();
+		return this.x() + (p ? p.absoluteX() - 1 : 0);
+	}
+
+	absoluteY() {
+		const p = this.parent();
+		return this.y() + (p ? p.absoluteY() - 1 : 0);
+	}
+
 	width() {
 		return this.size_.width === null ? this.sizeHint_.width : this.size_.width;
 	}
