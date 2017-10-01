@@ -13,6 +13,10 @@ class ListWidget extends BaseWidget {
 		this.separatorLine_ = 'none';
 	}
 
+	widgetType() {
+		return 'list';
+	}
+
 	onKey(name, matches, data) {
 		if (name === 'UP') {
 			this.selectUp();
@@ -120,9 +124,11 @@ class ListWidget extends BaseWidget {
 		}
 	}
 
-	render() {
+	async render() {
 		const term = this.term();
-		term.moveTo(this.x(), this.y());
+		//term.moveTo(this.x(), this.y());
+
+		//requestCursorLocation
 
 		let cursorX = this.x();
 		let cursorY = this.y();
@@ -135,6 +141,8 @@ class ListWidget extends BaseWidget {
 			termutils.drawLine(term, cursorX, cursorY, itemWidth, hLineChar);
 			cursorY++;
 		}
+
+		ilog(this.name() + ': ' + cursorX + ', ' + cursorY);
 
 		for (let i = this.topIndex(); i <= this.bottomIndex(); i++) {
 			let item = this.items_[i];
@@ -153,6 +161,8 @@ class ListWidget extends BaseWidget {
 				term.styleReset();
 			}
 
+			// if (!item || !item.label) throw new Error('Item without a label property: ' + JSON.stringify(item));
+
 			term(this.formatItemLabel(item.label, itemWidth));
 
 			cursorY++;
@@ -168,6 +178,8 @@ class ListWidget extends BaseWidget {
 			termutils.drawLine(term, cursorX, cursorY, itemWidth, hLineChar);
 			cursorY++;
 		}
+
+		term.styleReset();
 	}
 
 }

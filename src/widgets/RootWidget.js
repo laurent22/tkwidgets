@@ -12,8 +12,8 @@ class RootWidget extends BaseWidget {
 		widget.setParent(this);
 	}
 
-	items() {
-		return this.items_;
+	children() {
+		return this.children_;
 	}
 
 	canHaveFocus() {

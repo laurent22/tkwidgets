@@ -2,6 +2,10 @@ const LayoutWidget = require('./LayoutWidget.js');
 
 class HLayoutWidget extends LayoutWidget {
 
+	widgetType() {
+		return 'hlayout';
+	}
+
 	calculateSizes() {
 		let items = this.items().slice();
 		let totalStretch = 0;

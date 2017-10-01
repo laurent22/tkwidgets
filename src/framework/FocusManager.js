@@ -7,19 +7,23 @@ class FocusManager {
 		this.mode_ = 'widget';
 
 		this.term_.on('key', (name, matches, data) => {
-			if (name === 'ESCAPE') {
-				this.setMode('select');
+			if (name === 'TAB') {
+				this.focus(this.nextTabWidget());
 			}
 
-			if (this.mode() == 'select') {
-				if (name === 'TAB') {
-					this.focus(this.nextTabWidget());
-				}
+			// if (name === 'ESCAPE') {
+			// 	this.setMode('select');
+			// }
 
-				if (name === 'ENTER') {
-					this.setMode('widget');
-				}
-			}
+			// if (this.mode() == 'select') {
+			// 	if (name === 'TAB') {
+			// 		this.focus(this.nextTabWidget());
+			// 	}
+
+			// 	if (name === 'ENTER') {
+			// 		this.setMode('widget');
+			// 	}
+			// }
 		});
 	}
 
@@ -48,10 +52,22 @@ class FocusManager {
 
 	nextTabWidgetIndex() {
 		let tabIndex = this.focusedWidgetIndex();
-		if (tabIndex < 0) return -1;
-		tabIndex++;
-		if (tabIndex >= this.widgets_.length) tabIndex = 0;
-		return tabIndex;
+
+		let doneCount = 0;
+		while (true) {
+			tabIndex++;
+			if (tabIndex >= this.widgets_.length) tabIndex = 0;
+
+			const w = this.widgets_[tabIndex];
+			doneCount++;
+			if (!w.visible()) continue;
+
+			if (doneCount >= this.widgets_.length) return -1;
+
+			return tabIndex;
+		}
+
+		return -1;
 	}
 
 	focusedWidgetIndex() {
@@ -63,14 +79,18 @@ class FocusManager {
 
 	register(widget) {
 		this.widgets_.push(widget);
+
+		if (!this.focusedWidget_) {
+			widget.focus();
+		}
 	}
 
 	hasFocus(widget) {
-		return this.focusedWidget_ === widget;
+		return this.focusedWidget_ === widget && widget.visible();
 	}
 
 	hasKeyboard(widget) {
-		return this.hasFocus(widget) && this.mode() == 'widget';
+		return this.hasFocus(widget) && this.mode() == 'widget' && widget.visible();
 	}
 
 	focus(widget) {

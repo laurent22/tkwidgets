@@ -4,7 +4,6 @@ class BaseWidget {
 
 	constructor(term) {
 		if (!BaseWidget.id_) BaseWidget.id_ = 1;
-		if (!BaseWidget.focusManager_) BaseWidget.focusManager_ = new FocusManager(term);
 
 		this.id_ = BaseWidget.id_++;
 		this.term_ = term;
@@ -12,21 +11,83 @@ class BaseWidget {
 		this.sizeHint_ = { width: 20, height: 10 };
 		this.size_ = { width: null, height: null };
 		this.style_ = {};
-		this.invalidated_ = true;
 		this.renderTimeoutId_ = null;
 		this.parent_ = null;
 		this.shown_ = true;
+		this.children_ = [];
+		this.renderer_ = null;
+		this.lifeCycleState_ = 'created';
+		this.name_ = '';
 
-		this.term_.on('key', (name, matches, data) => {
-			if (!this.hasKeyboard()) return;
-			this.onKey(name, matches, data);
-		});
+		this.invalidate();
+	}
 
-		if (this.canHaveFocus()) BaseWidget.focusManager_.register(this);
+	onTermReady() {
+		ilog('onTermReady: ' + this.widgetType() + ' ' + this.id());
+
+		if (!BaseWidget.focusManager_) BaseWidget.focusManager_ = new FocusManager(this.term());
+
+		if (this.canHaveFocus()) {
+			this.term().on('key', (name, matches, data) => {
+				if (!this.hasKeyboard()) return;
+				this.onKey(name, matches, data);
+			});
+
+			BaseWidget.focusManager_.register(this);
+		}
+
+		for (let i = 0; i < this.children_.length; i++) {
+			if (this.lifeCycleState() == 'created') this.children_[i].onTermReady();
+		}
+
+		this.lifeCycleState_ = 'ready';
+	}
+
+	lifeCycleState() {
+		return this.lifeCycleState_;
+	}
+
+	renderer() {
+		if (!this.parent()) return this.renderer_;
+		return this.parent().renderer();
+	}
+
+	setRenderer(v) {
+		this.renderer_ = v;
+	}
+
+	addChild(widget) {
+		this.children_.push(widget);
+		widget.setParent(this);
+		if (widget.lifeCycleState() == 'created' && this.term()) widget.onTermReady();
+	}
+
+	children() {
+		return this.children_;
+	}
+
+	childAt(i) {
+		return this.children_[i];
+	}
+
+	childCount() {
+		return this.children_.length;
 	}
 
 	id() {
 		return this.id_;
+	}
+
+	setName(name) {
+		this.name_ = name;
+	}
+
+	name() {
+		return this.name_;
+	}
+
+	widgetType() {
+		return 'undefined';
 	}
 
 	parent() {
@@ -55,7 +116,9 @@ class BaseWidget {
 	}
 
 	visible() {
-		return this.parent() ? this.parent().shown() : this.shown();
+		if (!this.shown()) return false;
+		if (this.parent() && !this.parent().shown()) return false;
+		return true;
 	}
 
 	style() {
@@ -83,7 +146,9 @@ class BaseWidget {
 	}
 
 	term() {
-		return this.term_;
+		if (!this.renderer()) return null;
+		return this.renderer().term();
+		//return this.term_;
 	}
 
 	x() {
@@ -139,31 +204,30 @@ class BaseWidget {
 
 	invalidate() {
 		this.invalidated_ = true;
-		this.renderIfNeeded();
+
+		for (let i = 0; i < this.childCount(); i++) {
+			this.childAt(i).invalidate();
+		}
+
+		if (this.renderer()) {
+			this.renderer().scheduleRender();
+		}
 	}
 
 	invalidated() {
 		return this.invalidated_;
 	}
 
-	renderIfNeeded() {
-		if (!this.invalidated()) return;
-		if (!this.shown()) {
-			this.clear();
-		} else {
-			this.render();
-		}
-		this.invalidated_ = false;
-	}
-
-	clear() {
+	async clear() {
+		this.term().styleReset();
 		for (let y = 0; y < this.height(); y++) {
 			this.term().moveTo(this.x(), this.y() + y);
 			this.term().delete(this.width());
+			this.term().insert(this.width());
 		}
 	}
 
-	render() {}
+	async render() {}
 
 };
 
