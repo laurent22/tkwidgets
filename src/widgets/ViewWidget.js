@@ -2,10 +2,6 @@ const BaseWidget = require('./BaseWidget.js');
 
 class ViewWidget extends BaseWidget {
 
-	constructor(term) {
-		super(term);
-	}
-
 	canHaveFocus() {
 		return false;
 	}

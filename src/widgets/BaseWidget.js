@@ -2,11 +2,10 @@ const FocusManager = require('../framework/FocusManager.js');
 
 class BaseWidget {
 
-	constructor(term) {
+	constructor() {
 		if (!BaseWidget.id_) BaseWidget.id_ = 1;
 
 		this.id_ = BaseWidget.id_++;
-		this.term_ = term;
 		this.location_ = { x: 1, y: 1 };
 		this.sizeHint_ = { width: 20, height: 10 };
 		this.size_ = { width: null, height: null };
@@ -153,7 +152,6 @@ class BaseWidget {
 	term() {
 		if (!this.renderer()) return null;
 		return this.renderer().term();
-		//return this.term_;
 	}
 
 	x() {
@@ -226,9 +224,10 @@ class BaseWidget {
 	async clear() {
 		this.term().styleReset();
 		for (let y = 0; y < this.height(); y++) {
-			this.term().moveTo(this.x(), this.y() + y);
-			this.term().delete(this.width());
-			this.term().insert(this.width());
+			this.term().moveTo(this.x(), this.y() + y, ' '.repeat(this.width()));
+			// this.term().moveTo(this.x(), this.y() + y);
+			// this.term().delete(this.width());
+			// this.term().insert(this.width());
 		}
 	}
 

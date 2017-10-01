@@ -2,8 +2,8 @@ const BaseWidget = require('./BaseWidget.js');
 
 class LayoutWidget extends BaseWidget {
 
-	constructor(term) {
-		super(term);
+	constructor() {
+		super();
 		this.constraints_ = {};
 	}
 

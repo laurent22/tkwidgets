@@ -3,8 +3,8 @@ const termutils = require('../framework/termutils.js');
 
 class ListWidget extends BaseWidget {
 
-	constructor(term) {
-		super(term);
+	constructor() {
+		super();
 
 		this.items_ = [];
 		this.currentIndex_ = -1;
