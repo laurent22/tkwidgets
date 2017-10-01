@@ -19,6 +19,10 @@ class WindowWidget extends BaseWidget {
 			if (this.focusChangeEnabled_ && name === 'TAB') {
 				this.focusNext();
 			}
+
+			if (this.focusChangeEnabled_ && name === 'SHIFT_TAB') {
+				this.focusPrevious();
+			}
 		});
 	}
 
@@ -102,7 +106,7 @@ class WindowWidget extends BaseWidget {
 		this.focusNext();
 	}
 
-	nextFocusWidget() {
+	focusableWidgetByOffset(offset) {
 		let widgets = this.focusableWidgets();
 
 		if (!widgets.length) return null;
@@ -112,13 +116,22 @@ class WindowWidget extends BaseWidget {
 		for (let i = 0; i < widgets.length; i++) {
 			const widget = widgets[i];
 			if (widget === this.focusedWidget_) {
-				let nextIndex = i + 1;
+				let nextIndex = i + offset;
 				if (nextIndex >= widgets.length) nextIndex = 0;
+				if (nextIndex < 0) nextIndex = widgets.length - 1;
 				return widgets[nextIndex];
 			}
 		}
 
 		return null;
+	}
+
+	nextFocusWidget() {
+		return this.focusableWidgetByOffset(+1);
+	}
+
+	previousFocusWidget() {
+		return this.focusableWidgetByOffset(-1);
 	}
 
 	widgetHasFocus(widget) {
@@ -135,6 +148,10 @@ class WindowWidget extends BaseWidget {
 
 	focusNext() {
 		this.focusWidget(this.nextFocusWidget());
+	}
+
+	focusPrevious() {
+		this.focusWidget(this.previousFocusWidget());
 	}
 
 	focusLast() {

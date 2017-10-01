@@ -119,10 +119,11 @@ async function main() {
 
 	const listWidget1 = new ListWidget();
 	listWidget1.setItems(items);
+	listWidget1.setLocation(1, 1);
 	listWidget1.setName('listWidget1');
 
 	const listWidget2 = new ListWidget();
-	listWidget2.setLocation(25, 5);
+	listWidget2.setLocation(25, 1);
 	listWidget2.setItems(items2);
 	listWidget2.setName('listWidget2');
 
@@ -184,9 +185,6 @@ async function main() {
 			} else {
 				win1.activate();
 			}
-
-			ilog('WIN1: ' + win1.isActiveWindow());
-			ilog('WIN2: ' + win2.isActiveWindow());
 		}
 	});
 }
