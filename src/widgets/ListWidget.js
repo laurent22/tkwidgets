@@ -104,6 +104,7 @@ class ListWidget extends BaseWidget {
 	setItems(items) {
 		this.items_ = items;
 		this.itemMaxWidth_ = null;
+		if (this.currentIndex_ < 0 && this.items_.length) this.currentIndex_ = 0;
 	}
 
 	itemMaxWidth() {
@@ -126,9 +127,6 @@ class ListWidget extends BaseWidget {
 
 	async render() {
 		const term = this.term();
-		//term.moveTo(this.x(), this.y());
-
-		//requestCursorLocation
 
 		let cursorX = this.absoluteX();
 		let cursorY = this.absoluteY();
@@ -160,8 +158,6 @@ class ListWidget extends BaseWidget {
 			} else {
 				term.styleReset();
 			}
-
-			// if (!item || !item.label) throw new Error('Item without a label property: ' + JSON.stringify(item));
 
 			term(this.formatItemLabel(item.label, itemWidth));
 

@@ -1,8 +1,8 @@
 
 
 
-const fs = require('fs');
 global.ilog = function(s) {
+	const fs = require('fs');
 	s = ((new Date()).getTime()) + ': ' + s;
 	fs.appendFileSync('log.txt', s + "\n");
 }
