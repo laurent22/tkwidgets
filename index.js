@@ -27,13 +27,6 @@ async function main() {
 	term.fullscreen();
 	term.hideCursor();
 
-	// term.moveTo(2,2);
-	// term('abcdefg');
-
-	// term.moveTo(2,2);
-	// term.delete(1);
-	// term.insert(1);
-
 
 
 	let items = [
@@ -110,6 +103,7 @@ async function main() {
 		}
 
 		if (name == 't') {
+			ilog('=======================');
 			if (view1.shown()) {
 				view1.hide();
 				view2.show();

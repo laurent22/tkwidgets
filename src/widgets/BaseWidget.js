@@ -104,6 +104,7 @@ class BaseWidget {
 		if (typeof doShow === 'undefined') doShow = true;
 		if (this.shown_ === doShow) return;
 		this.shown_ = doShow;
+		if (BaseWidget.focusManager_) BaseWidget.focusManager_.updateFocusedWidget();
 		this.invalidate();
 	}
 
@@ -134,7 +135,11 @@ class BaseWidget {
 	}
 
 	focus() {
-		BaseWidget.focusManager_.focus(this);
+		if (BaseWidget.focusManager_) BaseWidget.focusManager_.focus(this);
+	}
+
+	blur() {
+		if (BaseWidget.focusManager_) BaseWidget.focusManager_.blur(this);
 	}
 
 	hasFocus() {

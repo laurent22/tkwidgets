@@ -7,33 +7,48 @@ class HLayoutWidget extends LayoutWidget {
 	}
 
 	calculateSizes() {
-		let items = this.items().slice();
+		let children = this.children();
 		let totalStretch = 0;
 		let widthForStretch = this.width();
+		let stretchChildren = [];
 
-		for (let i = 0; i < items.length; i++) {
-			let item = items[i];
-			if (item.constraints.type == 'fixed') {
-				item.width = item.constraints.width;
-				widthForStretch -= item.width;
+		let output = [];
+
+		for (let i = 0; i < children.length; i++) {
+			const child = children[i];
+			const constraints = this.widgetConstraints(child);
+
+			if (constraints.type == 'fixed') {
+				output.push({
+					widget: child,
+					width: constraints.width,
+				});
+				widthForStretch -= constraints.width;
 			} else { // stretch
-				totalStretch += item.constraints.factor;
+				totalStretch += constraints.factor;
+				stretchChildren.push(child);
 			}
 		}
 
 		let remainingWidth = widthForStretch;
-		for (let i = 0; i < items.length; i++) {
-			let item = items[i];
-			if (item.constraints.type == 'fixed') {
+		for (let i = 0; i < children.length; i++) {
+			const child = children[i];
+			const constraints = this.widgetConstraints(child);
+
+			if (constraints.type == 'fixed') {
 				// Already done
 			} else { // stretch
-				let percent = item.constraints.factor / totalStretch;
-				item.width = Math.min(Math.round(percent * widthForStretch), remainingWidth);
-				remainingWidth -= item.width;
+				let percent = constraints.factor / totalStretch;
+				const w = Math.min(Math.round(percent * widthForStretch), remainingWidth);
+				output.push({
+					widget: child,
+					width: w,
+				});
+				remainingWidth -= w;
 			}
 		}
 
-		return items;
+		return output;
 	}
 
 	render() {

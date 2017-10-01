@@ -60,11 +60,9 @@ class FocusManager {
 
 			const w = this.widgets_[tabIndex];
 			doneCount++;
-			if (!w.visible()) continue;
 
+			if (w.visible()) return tabIndex
 			if (doneCount >= this.widgets_.length) return -1;
-
-			return tabIndex;
 		}
 
 		return -1;
@@ -96,6 +94,8 @@ class FocusManager {
 	focus(widget) {
 		if (this.focusedWidget_ === widget) return;
 
+		ilog('FOCUS: ' + (widget ? widget.name() : 'null'));
+
 		let previousWidget = this.focusedWidget_;
 		this.focusedWidget_ = widget;
 
@@ -106,6 +106,21 @@ class FocusManager {
 		if (this.focusedWidget_) {
 			this.focusedWidget_.onFocus();
 		}
+	}
+
+	blur(widget) {
+		if (!widget || this.focusedWidget_ !== widget) return;
+
+		this.focusedWidget_.onBlur();
+
+		this.focusedWidget_ = null;
+
+		this.focus(this.nextTabWidget());
+	}
+
+	updateFocusedWidget() {
+		if (this.focusedWidget_ && this.focusedWidget_.visible()) return;
+		this.focus(this.nextTabWidget());
 	}
 
 }
