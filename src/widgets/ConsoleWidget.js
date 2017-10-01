@@ -1,11 +1,11 @@
 const BaseWidget = require('./BaseWidget.js');
+const termutils = require('../framework/termutils.js');
 
 class ConsoleWidget extends BaseWidget {
 
 	constructor() {
 		super();
-		this.buffer_ = ['abcd', 'efg'];
-		this.activated_ = !false;
+		this.buffer_ = [];
 	}
 
 	widgetType() {
@@ -13,24 +13,12 @@ class ConsoleWidget extends BaseWidget {
 	}
 
 	canHaveFocus() {
-		return false;
+		return true;
 	}
 
-	activate(doActivate) {
-		if (typeof doActivate === 'undefined') doActivate = true;
-
-		if (doActivate === this.activated_) return;
-
-		this.activated_ = doActivate;
-		this.invalidate();
-	}
-
-	activated() {
-		return this.activated_;
-	}
-
-	deactivate() {
-		this.activate(false);
+	onFocus() {
+		super.onFocus();
+		this.window().disableFocusChange();
 	}
 
 	innerHeight() {
@@ -40,13 +28,15 @@ class ConsoleWidget extends BaseWidget {
 	async render() {
 		const term = this.term();
 
+		this.clear();
+
 		let x = this.x();
 		let y = this.y();
 
-		let topBufferLineIndex = this.buffer_.length - this.innerHeight();
+		let topBufferLineIndex = this.buffer_.length - (this.innerHeight() - 1);
 		if (topBufferLineIndex < 0) topBufferLineIndex = 0;
 
-		for (let i = 0; i < this.innerHeight() - 2; i++) {
+		for (let i = 0; i < this.innerHeight(); i++) {
 			let lineIndex = topBufferLineIndex + i;
 			if (lineIndex >= this.buffer_.length) break;
 
@@ -55,13 +45,25 @@ class ConsoleWidget extends BaseWidget {
 			y++;
 		}
 
-		if (this.activated()) {
+		if (this.hasFocus()) {
 			term.moveTo(x, y);
-			term.inputField({}, (error, input) => {
+			term('> ');
+			const cursorWasShown = termutils.cursorShown(term);
+			termutils.showCursor(term);
+
+			let options = { cancelable: true };
+
+			term.inputField(options, (error, input) => {
+				termutils.showCursor(term, cursorWasShown);
+
+				if (input === undefined) { // User cancel
+					this.window().enableFocusChange();
+					this.window().focusLast();
+					return;
+				}
+
 				this.buffer_ = this.buffer_.concat(input.split("\n"));
 				this.invalidate();
-				//term.moveTo(this.x(), this.y() + 1);
-				//term(input);
 			});
 		}
 	}

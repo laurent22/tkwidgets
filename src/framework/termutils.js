@@ -5,17 +5,6 @@ termutils.drawLine = function(term, cursorX, cursorY, length, char) {
 	term(char.repeat(length));
 }
 
-termutils.cursorLocation = function(term) {
-	return new Promise((resolve, reject) => {
-		//term.requestCursorLocation();
-
-		// term.on( 'terminal' , function( name , data ) {
-		// 	console.log( "'terminal' event:" , name , data ) ;
-		// 	resolve('waht');
-		// } ) ;
-	});
-}
-
 termutils.msleep = function(ms) {
 	return new Promise((resolve, reject) => {
 		setTimeout(() => {
@@ -23,5 +12,22 @@ termutils.msleep = function(ms) {
 		}, ms);
 	});
 };
+
+// Use functions below to hide/show cursor and keep track of its state
+termutils.cursorShown_ = true;
+
+termutils.cursorShown = function(term) {
+	return termutils.cursorShown_;
+}
+
+termutils.showCursor = function(term, doShow) {
+	if (typeof doShow === 'undefined') doShow = true;
+	termutils.cursorShown_ = doShow;
+	term.hideCursor(!doShow);
+}
+
+termutils.hideCursor = function(term) {
+	termutils.showCursor(term, false);
+}
 
 module.exports = termutils;

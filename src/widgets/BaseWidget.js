@@ -28,7 +28,6 @@ class BaseWidget {
 
 		if (this.canHaveFocus()) {
 			this.term().on('key', (name, matches, data) => {
-				ilog('HAS : ' + this.hasKeyboard() + ', ' + this.hasFocus());
 				if (!this.hasKeyboard()) return;
 				this.onKey(name, matches, data);
 			});

@@ -6,6 +6,8 @@ class WindowWidget extends BaseWidget {
 		super();
 		this.activate();
 		this.focusedWidget_ = null;
+		this.focusChangeEnabled_ = true;
+		this.lastFocusedWidget_ = null;
 	}
 
 	onTermReady() {
@@ -14,10 +16,19 @@ class WindowWidget extends BaseWidget {
 		this.term().on('key', (name, matches, data) => {
 			if (!this.isActiveWindow()) return;
 
-			if (name === 'TAB') {
-				this.focusWidget(this.nextFocusWidget());
+			if (this.focusChangeEnabled_ && name === 'TAB') {
+				this.focusNext();
 			}
 		});
+	}
+
+	enableFocusChange(doEnable) {
+		if (typeof doEnable === 'undefined') doEnable = true;
+		this.focusChangeEnabled_ = doEnable;
+	}
+
+	disableFocusChange() {
+		this.enableFocusChange(false);
 	}
 
 	isWindow() {
@@ -63,15 +74,16 @@ class WindowWidget extends BaseWidget {
 	}
 
 	focusWidget(widget) {
+		if (!this.focusChangeEnabled_) return;
 		if (this.focusedWidget_ === widget) return;
 
 		ilog('FOCUS: ' + (widget ? widget.name() : 'null'));
 
-		let previousWidget = this.focusedWidget_;
+		this.lastFocusedWidget_ = this.focusedWidget_;
 		this.focusedWidget_ = widget;
 
-		if (previousWidget) {
-			previousWidget.onBlur();
+		if (this.lastFocusedWidget_) {
+			this.lastFocusedWidget_.onBlur();
 		}
 
 		if (this.focusedWidget_) {
@@ -84,9 +96,10 @@ class WindowWidget extends BaseWidget {
 
 		this.focusedWidget_.onBlur();
 
+		this.lastFocusedWidget_ = this.focusedWidget_;
 		this.focusedWidget_ = null;
 
-		this.focusWidget(this.nextFocusWidget());
+		this.focusNext();
 	}
 
 	nextFocusWidget() {
@@ -118,6 +131,14 @@ class WindowWidget extends BaseWidget {
 
 	focusedWidget() {
 		return this.focusedWidget_;
+	}
+
+	focusNext() {
+		this.focusWidget(this.nextFocusWidget());
+	}
+
+	focusLast() {
+		this.focusWidget(this.lastFocusedWidget_);
 	}
 
 }

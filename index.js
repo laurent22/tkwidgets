@@ -27,9 +27,9 @@ async function main() {
 	const term = tk.terminal;
 
 
-
 	term.fullscreen();
-	term.hideCursor();
+
+	termutils.hideCursor(term);
 
 
 
@@ -131,9 +131,15 @@ async function main() {
 	listWidget3.setItems(items2);
 	listWidget3.setName('listWidget3');
 
+	const consoleWidget = new ConsoleWidget();
+	consoleWidget.setName('consoleWidget');
+	consoleWidget.setHeight(5);
+	consoleWidget.setLocation(1, 15);
+
 	const win1 = new WindowWidget();
 	win1.addChild(listWidget1);
 	win1.addChild(listWidget2);
+	win1.addChild(consoleWidget);
 	win1.setName('win1');
 
 	const win2 = new WindowWidget();
@@ -159,15 +165,17 @@ async function main() {
 
 
 
-
-
 	term.grabInput();
 
 	term.on('key' , function( name , matches , data ) {
 		if (name === 'CTRL_C' ) {
-			term.hideCursor(false);
+			termutils.showCursor(term);
 			term.fullscreen(false);
 			process.exit();
+		}
+
+		if (name === 'CTRL_J') {
+			consoleWidget.focus();
 		}
 
 		if (name == 't') {
