@@ -13,7 +13,9 @@ ilog('=======================================================');
 
 const termutils = require('./src/framework/termutils.js');
 const Renderer = require('./src/framework/Renderer.js');
+
 const ListWidget = require('./src/widgets/ListWidget.js');
+const TextWidget = require('./src/widgets/TextWidget.js');
 const ConsoleWidget = require('./src/widgets/ConsoleWidget.js');
 const HLayoutWidget = require('./src/widgets/HLayoutWidget.js');
 const ViewWidget = require('./src/widgets/ViewWidget.js');
@@ -69,48 +71,6 @@ async function main() {
 
 
 
-	// const rootWidget = new ViewWidget();
-	// rootWidget.setName('rootWidget');
-	// rootWidget.setWidth(term.width);
-	// rootWidget.setHeight(term.height);
-
-	// const listWidget1 = new ListWidget();
-	// listWidget1.setItems(items);
-	// listWidget1.setName('listWidget1');
-
-	// const listWidget2 = new ListWidget();
-	// listWidget2.setItems(items2);
-	// listWidget2.setName('listWidget2');
-
-	// const consoleWidget = new ConsoleWidget();
-	// consoleWidget.setName('consoleWidget');
-	// consoleWidget.setHeight(5);
-	// consoleWidget.setLocation(1, 15);
-
-	// const listLayout = new HLayoutWidget();
-	// listLayout.setWidth(term.width);
-	// listLayout.setHeight(term.height);
-	// listLayout.addChild(listWidget1, { type: 'stretch', factor: 1 });
-	// listLayout.addChild(listWidget2, { type: 'stretch', factor: 1 });
-
-	// rootWidget.addChild(listLayout);
-	// rootWidget.addChild(consoleWidget);
-
-	// renderer = new Renderer(term, rootWidget);
-	// renderer.start();
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -132,6 +92,11 @@ async function main() {
 	listWidget3.setItems(items2);
 	listWidget3.setName('listWidget3');
 
+	const textWidget = new TextWidget();
+	textWidget.setLocation(50, 1);
+	textWidget.setText("# mon titre\n\du texte *en gras*\n\nSome long paragraph some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph ");
+	textWidget.setName('textWidget');
+
 	const consoleWidget = new ConsoleWidget();
 	consoleWidget.setName('consoleWidget');
 	consoleWidget.setHeight(5);
@@ -140,6 +105,7 @@ async function main() {
 	const win1 = new WindowWidget();
 	win1.addChild(listWidget1);
 	win1.addChild(listWidget2);
+	win1.addChild(textWidget);
 	win1.addChild(consoleWidget);
 	win1.setName('win1');
 	win1.setLocation(2,2);
@@ -193,12 +159,3 @@ async function main() {
 main().catch((error) => {
 	console.error(error);
 });
-
-
-
-
-
-// - Press C to start typing command
-// 	- cp %n %b
-// - Deux ligne en bas (command + resultat)
-// - Essayer command + confirm? + résultt

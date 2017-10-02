@@ -140,8 +140,6 @@ class ListWidget extends BaseWidget {
 			cursorY++;
 		}
 
-		ilog(this.name() + ': ' + cursorX + ', ' + cursorY);
-
 		for (let i = this.topIndex(); i <= this.bottomIndex(); i++) {
 			let item = this.items_[i];
 

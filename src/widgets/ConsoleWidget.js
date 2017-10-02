@@ -25,6 +25,10 @@ class ConsoleWidget extends BaseWidget {
 		return this.height();
 	}
 
+	innerWidth() {
+		return this.width();
+	}
+
 	async render() {
 		const term = this.term();
 
@@ -46,7 +50,8 @@ class ConsoleWidget extends BaseWidget {
 		}
 
 		term.moveTo(x, y);
-		term('> ');
+		term('>' + ' '.repeat(this.innerWidth() - 1));
+		term.moveTo(x + 2, y);
 
 		if (this.hasFocus()) {	
 			const cursorWasShown = termutils.cursorShown(term);
