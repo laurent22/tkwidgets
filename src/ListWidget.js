@@ -10,6 +10,7 @@ class ListWidget extends BaseWidget {
 		this.currentIndex_ = -1;
 		this.topIndex_ = 0;
 		this.itemMaxWidth_ = null;
+		this.itemRenderer_ = null;
 	}
 
 	widgetType() {
@@ -92,6 +93,12 @@ class ListWidget extends BaseWidget {
 		if (this.currentIndex_ < 0 && this.items_.length) this.currentIndex_ = 0;
 	}
 
+	setItemRenderer(callback) {
+		if (callback === this.itemRenderer_) return;
+		this.itemRenderer_ = callback;
+		this.invalidate();
+	}
+
 	itemMaxWidth() {
 		if (this.itemMaxWidth_ !== null) return this.itemMaxWidth_;
 
@@ -139,7 +146,8 @@ class ListWidget extends BaseWidget {
 				term.styleReset();
 			}
 
-			term(this.formatItemLabel(item.label, itemWidth));
+			const itemLabel = this.itemRenderer_ ? this.itemRenderer_(item) : item.label;
+			term(this.formatItemLabel(itemLabel, itemWidth));
 
 			cursorY++;
 			viewHeight++;

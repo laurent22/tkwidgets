@@ -67,6 +67,12 @@ function main() {
 		{ label: "22_dix", },
 	];
 
+	let customItems = [
+		{ id: 1, title: "one" },
+		{ id: 2, title: "two" },
+		{ id: 3, title: "three" },
+	];
+
 
 
 
@@ -80,7 +86,10 @@ function main() {
 	rootWidget.setName('rootWidget');
 
 	const listWidget1 = new ListWidget();
-	listWidget1.setItems(items);
+	listWidget1.setItems(customItems);
+	listWidget1.setItemRenderer((item) => {
+		return item.title + ' (' + item.id + ')';
+	});
 	listWidget1.setLocation(1, 1);
 	listWidget1.setStyle({
 		borderTopWidth: 1,
