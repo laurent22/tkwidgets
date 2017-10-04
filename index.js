@@ -80,6 +80,12 @@ async function main() {
 	const listWidget1 = new ListWidget();
 	listWidget1.setItems(items);
 	listWidget1.setLocation(1, 1);
+	listWidget1.setStyle({
+		borderTopWidth: 1,
+		borderBottomWidth: 1,
+		borderLeftWidth: 1,
+		borderRightWidth: 1,
+	});
 	listWidget1.setName('listWidget1');
 
 	const listWidget2 = new ListWidget();
@@ -108,7 +114,7 @@ async function main() {
 	win1.addChild(textWidget);
 	win1.addChild(consoleWidget);
 	win1.setName('win1');
-	win1.setLocation(2,2);
+	win1.setLocation(1,1);
 
 	const win2 = new WindowWidget();
 	win2.addChild(listWidget3);

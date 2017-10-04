@@ -25,14 +25,6 @@ class ListWidget extends BaseWidget {
 		}
 	}
 
-	innerHeight() {
-		const s = this.style();
-		let output = this.height();
-		if (s.borderTopWidth) output--;
-		if (s.borderBottomWidth) output--;
-		return output;
-	}
-
 	topIndex() {
 		return this.topIndex_;
 	}
@@ -125,20 +117,15 @@ class ListWidget extends BaseWidget {
 		}
 	}
 
-	async render() {
+	render() {
+		super.render();
+
 		const term = this.term();
 
-		let cursorX = this.absoluteX();
-		let cursorY = this.absoluteY();
-		let itemWidth = this.width();
+		let cursorX = this.absoluteInnerX();
+		let cursorY = this.absoluteInnerY();
+		let itemWidth = this.innerWidth();
 		let viewHeight = 0;
-
-		const hLineChar = this.hasFocus() ? '=' : '-';
-
-		if (this.style().borderTopWidth) {
-			termutils.drawLine(term, cursorX, cursorY, itemWidth, hLineChar);
-			cursorY++;
-		}
 
 		for (let i = this.topIndex(); i <= this.bottomIndex(); i++) {
 			let item = this.items_[i];
@@ -165,12 +152,6 @@ class ListWidget extends BaseWidget {
 			if (viewHeight > this.innerHeight()) {
 				break;
 			}
-		}
-
-		if (this.style().borderBottomWidth) {
-			term.styleReset();
-			termutils.drawLine(term, cursorX, cursorY, itemWidth, hLineChar);
-			cursorY++;
 		}
 
 		term.styleReset();

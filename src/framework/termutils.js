@@ -1,8 +1,15 @@
 const termutils = {};
 
-termutils.drawLine = function(term, cursorX, cursorY, length, char) {
+termutils.drawHLine = function(term, cursorX, cursorY, length, char) {
 	term.moveTo(cursorX, cursorY);
 	term(char.repeat(length));
+}
+
+termutils.drawVLine = function(term, cursorX, cursorY, length, char) {
+	for (let i = 0; i < length; i++) {
+		term.moveTo(cursorX, cursorY + i);
+		term(char);
+	}
 }
 
 termutils.msleep = function(ms) {

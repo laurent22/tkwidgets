@@ -34,7 +34,9 @@ class TextWidget extends BaseWidget {
 		this.invalidate();
 	}
 
-	async render() {
+	render() {
+		super.render();
+
 		const term = this.term();
 
 		this.clear();

@@ -1,3 +1,5 @@
+const termutils = require('../framework/termutils.js');
+
 class BaseWidget {
 
 	constructor() {
@@ -208,6 +210,46 @@ class BaseWidget {
 		this.invalidate();
 	}
 
+	innerWidth() {
+		const s = this.style();
+		let output = this.width();
+		if (s.borderLeftWidth) output--;
+		if (s.borderRightWidth) output--;
+		return output;
+	}	
+
+	innerHeight() {
+		const s = this.style();
+		let output = this.height();
+		if (s.borderTopWidth) output--;
+		if (s.borderBottomWidth) output--;
+		return output;
+	}
+
+	innerX() {
+		let output = this.x();
+		if (this.style().borderLeftWidth) output++;
+		return output;
+	}
+
+	innerY() {
+		let output = this.y();
+		if (this.style().borderTopWidth) output++;
+		return output;
+	}
+
+	absoluteInnerX() {
+		let output = this.absoluteX();
+		if (this.style().borderLeftWidth) output++;
+		return output;
+	}
+
+	absoluteInnerY() {
+		let output = this.absoluteY();
+		if (this.style().borderTopWidth) output++;
+		return output;
+	}
+
 	onKey(name, matches, data) {}
 
 	onFocus() {
@@ -247,14 +289,46 @@ class BaseWidget {
 		return this.invalidated_;
 	}
 
-	async clear() {
+	clear() {
 		this.term().styleReset();
 		for (let y = 0; y < this.height(); y++) {
 			this.term().moveTo(this.x(), this.y() + y, ' '.repeat(this.width()));
 		}
 	}
 
-	async render() {}
+	drawBorder() {
+		const term = this.term();
+
+		let x = this.absoluteX();
+		let y = this.absoluteY();
+		let width = this.width();
+		let height = this.height();
+
+		const hLineChar = this.hasFocus() ? '=' : '-';
+		const vLineChar = this.hasFocus() ? '│' : '|';
+
+		term.styleReset();
+
+		if (this.style().borderLeftWidth) {
+			termutils.drawVLine(term, x, y, height, vLineChar);
+		}
+
+		if (this.style().borderRightWidth) {
+			termutils.drawVLine(term, x + width - 1, y, height, vLineChar);
+		}
+
+		if (this.style().borderTopWidth) {
+			termutils.drawHLine(term, x, y, width, hLineChar);
+		}
+
+		if (this.style().borderBottomWidth) {
+			termutils.drawHLine(term, x, y + height - 1, width, hLineChar);
+		}
+	}
+
+	render() {
+		this.drawBorder();
+	}
 
 };
 

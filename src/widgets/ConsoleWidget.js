@@ -29,7 +29,9 @@ class ConsoleWidget extends BaseWidget {
 		return this.width();
 	}
 
-	async render() {
+	render() {
+		super.render();
+
 		const term = this.term();
 
 		this.clear();
