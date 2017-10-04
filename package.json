@@ -1,4 +1,6 @@
 {
+  "name": "tkwidgets",
+  "version": "0.5.0",
   "dependencies": {
     "fs-extra": "^4.0.2",
     "marked": "^0.3.6",
