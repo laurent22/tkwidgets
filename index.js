@@ -106,7 +106,7 @@ function main() {
 	const textWidget = new TextWidget();
 	textWidget.setLocation(50, 1);
 	textWidget.setVStretch(true);
-	textWidget.setText("# mon titre\n\du texte *en gras*\n\n Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut ligula massa, elementum et pretium sit amet, ornare facilisis libero. Integer ut pharetra augue. Praesent luctus interdum lacus vel faucibus. Morbi mollis ac nulla ac euismod. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Morbi eu nibh augue. Ut at est malesuada, luctus tortor ac, tristique lacus. Donec vel nunc ut dui ultricies ultrices at sed odio. Morbi tempus tellus quis orci elementum consectetur id eu nibh.");
+	textWidget.setText("# mon titre\n\du texte *en gras*\n\n Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut ligula massa, elementum et pretium sit amet, ornare facilisis libero. Integer ut pharetra augue. Praesent luctus interdum lacus vel faucibus. Morbi mollis ac nulla ac euismod. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Morbi eu nibh augue. Ut at est malesuada, luctus tortor ac, tristique lacus. Donec vel nunc ut dui ultricies ultrices at sed odio. Morbi tempus tellus quis orci elementum consectetur id eu nibh FIN.");
 	textWidget.setName('textWidget');
 	textWidget.setStyle({
 		borderTopWidth: 1,
@@ -146,16 +146,7 @@ function main() {
 	renderer = new Renderer(term, rootWidget);
 	renderer.start();
 
-	ilog('Layout1: ' + layout1.width() + ', ' + layout1.height());
-	//ilog('Layout2: ' + layout2.width() + ', ' + layout2.height());
-
-
-
-
-
-
-
-
+	
 
 
 

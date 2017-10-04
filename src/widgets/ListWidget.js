@@ -10,7 +10,6 @@ class ListWidget extends BaseWidget {
 		this.currentIndex_ = -1;
 		this.topIndex_ = 0;
 		this.itemMaxWidth_ = null;
-		this.separatorLine_ = 'none';
 	}
 
 	widgetType() {

@@ -35,7 +35,6 @@ class Renderer {
 			if (widget.visible()) {
 				widget.render();
 			} else {
-				ilog(widget.x() + ', ' + widget.y() + ', ' + widget.width() + ', ' + widget.height());
 				widget.clear();
 			}
 

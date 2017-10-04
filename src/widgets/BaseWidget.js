@@ -9,6 +9,7 @@ class BaseWidget {
 		this.location_ = { x: 1, y: 1 };
 		this.sizeHint_ = { width: 20, height: 10 };
 		this.size_ = { width: null, height: null };
+		this.previousRenderSize_ = null;
 		this.style_ = {};
 		this.renderTimeoutId_ = null;
 		this.parent_ = null;
@@ -71,9 +72,25 @@ class BaseWidget {
 	}
 
 	addChild(widget) {
+		if (widget.parent()) {
+			widget.parent().removeChild(widget);
+		}
+
 		this.children_.push(widget);
 		widget.setParent(this);
 		if (widget.lifeCycleState() == 'created' && this.term()) widget.onTermReady();
+		this.invalidate();
+	}
+
+	removeChild(widget) {
+		let temp = [];
+		for (let i = 0; i < this.children_.length; i++) {
+			if (this.children_[i] === widget) continue;
+			temp.push(widget);
+		}
+		this.children_ = temp;
+		widget.setParent(null);
+		this.invalidate();
 	}
 
 	children() {
@@ -208,6 +225,8 @@ class BaseWidget {
 		const p = this.parent();
 		return this.y() + (p ? p.absoluteY() - 1 : 0);
 	}
+
+	onSizeChanged() {}
 
 	width() {
 		if (this.hStretch_) {
@@ -363,7 +382,15 @@ class BaseWidget {
 	}
 
 	render() {
+		if (this.previousRenderSize_ === null) this.previousRenderSize_ = { innerWidth: this.innerWidth(), innerHeight: this.innerHeight() };
+
+		if (this.previousRenderSize_.innerWidth != this.innerWidth || this.previousRenderSize_.innerHeight != this.innerHeight()) {
+			this.onSizeChanged();
+		}
+
 		this.drawBorder();
+
+		this.previousRenderSize_ = { innerWidth: this.innerWidth(), innerHeight: this.innerHeight() };
 	}
 
 };

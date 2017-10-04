@@ -82,8 +82,6 @@ class WindowWidget extends BaseWidget {
 		if (!this.focusChangeEnabled_) return;
 		if (this.focusedWidget_ === widget) return;
 
-		ilog('FOCUS: ' + (widget ? widget.name() : 'null'));
-
 		this.lastFocusedWidget_ = this.focusedWidget_;
 		this.focusedWidget_ = widget;
 
