@@ -4,17 +4,20 @@ class LayoutWidget extends BaseWidget {
 
 	constructor() {
 		super();
-		this.constraints_ = {};
+		this.constraints_ = [];
 		this.setStretch(true, true);
 	}
 
 	addChild(widget, constraints) {
-		this.constraints_[widget] = constraints;
+		this.constraints_.push({ widget: widget, constraints: constraints });
 		return super.addChild(widget);
 	}
 
 	widgetConstraints(widget) {
-		return this.constraints_[widget];
+		for (let i = 0; i < this.constraints_.length; i++) {
+			if (this.constraints_[i].widget === widget) return this.constraints_[i].constraints;
+		}
+		return {};
 	}
 
 	canHaveFocus() {

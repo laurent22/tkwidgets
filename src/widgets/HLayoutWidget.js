@@ -14,6 +14,8 @@ class HLayoutWidget extends LayoutWidget {
 
 		let output = [];
 
+		//ilog(JSON.stringify(this.constraints_));
+
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
 			const constraints = this.widgetConstraints(child);

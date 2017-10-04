@@ -99,8 +99,9 @@ async function main() {
 	textWidget.setName('textWidget');
 
 	const layout1 = new HLayoutWidget();
-	layout1.addChild(listWidget1, { type: 'stretch', factor: 1 });
-	layout1.addChild(listWidget2, { type: 'stretch', factor: 1 });
+	layout1.addChild(listWidget1, { type: 'fixed', width: 15 });
+	layout1.addChild(listWidget2, { type: 'fixed', width: 15 });
+	layout1.addChild(textWidget, { type: 'stretch', factor: 1 });
 
 	const win1 = new WindowWidget();
 	win1.addChild(layout1);
@@ -112,9 +113,7 @@ async function main() {
 	renderer = new Renderer(term, rootWidget);
 	renderer.start();
 
-	win1.activate();
 
-	ilog('LAyour: ' + win1.width());
 
 
 
