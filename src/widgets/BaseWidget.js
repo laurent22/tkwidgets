@@ -17,6 +17,8 @@ class BaseWidget {
 		this.renderer_ = null;
 		this.lifeCycleState_ = 'created';
 		this.name_ = '';
+		this.hStretch_ = false;
+		this.vStretch_ = false;
 
 		this.invalidate();
 	}
@@ -96,6 +98,23 @@ class BaseWidget {
 
 	name() {
 		return this.name_;
+	}
+
+	setStretch(h, v) {
+		this.setHStretch(h);
+		this.setVStretch(v);
+	}
+
+	setHStretch(v) {
+		if (v === this.hStretch_) return;
+		this.hStretch_ = v;
+		this.invalidate();
+	}
+
+	setVStretch(v) {
+		if (v === this.vStretch_) return;
+		this.vStretch_ = v;
+		this.invalidate();
 	}
 
 	widgetType() {
@@ -191,10 +210,20 @@ class BaseWidget {
 	}
 
 	width() {
+		if (this.hStretch_) {
+			if (this.parent()) return this.parent().width();
+			if (this.term()) return this.term().width;
+		}
+
 		return this.size_.width === null ? this.sizeHint_.width : this.size_.width;
 	}
 
 	height() {
+		if (this.vStretch_) {
+			if (this.parent()) return this.parent().height();
+			if (this.term()) return this.term().height;
+		}
+
 		return this.size_.height === null ? this.sizeHint_.height : this.size_.height;
 	}
 

@@ -5,6 +5,7 @@ class LayoutWidget extends BaseWidget {
 	constructor() {
 		super();
 		this.constraints_ = {};
+		this.setStretch(true, true);
 	}
 
 	addChild(widget, constraints) {

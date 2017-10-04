@@ -8,6 +8,7 @@ class WindowWidget extends BaseWidget {
 		this.focusedWidget_ = null;
 		this.focusChangeEnabled_ = true;
 		this.lastFocusedWidget_ = null;
+		this.setStretch(true, true);
 	}
 
 	onTermReady() {

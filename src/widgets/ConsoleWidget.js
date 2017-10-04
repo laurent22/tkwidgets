@@ -21,14 +21,6 @@ class ConsoleWidget extends BaseWidget {
 		this.window().disableFocusChange();
 	}
 
-	innerHeight() {
-		return this.height();
-	}
-
-	innerWidth() {
-		return this.width();
-	}
-
 	render() {
 		super.render();
 
