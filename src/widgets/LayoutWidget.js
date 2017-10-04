@@ -8,6 +8,49 @@ class LayoutWidget extends BaseWidget {
 		this.setStretch(true, true);
 	}
 
+	calculateSizes(sizeForStretch) {
+		let children = this.children();
+		let totalStretch = 0;
+		let stretchChildren = [];
+
+		let output = [];
+
+		for (let i = 0; i < children.length; i++) {
+			const child = children[i];
+			const constraints = this.widgetConstraints(child);
+
+			if (constraints.type == 'fixed') {
+				sizeForStretch -= constraints.factor;
+			} else { // stretch
+				totalStretch += constraints.factor;
+				stretchChildren.push(child);
+			}
+		}
+
+		let remainingSize = sizeForStretch;
+		for (let i = 0; i < children.length; i++) {
+			const child = children[i];
+			const constraints = this.widgetConstraints(child);
+
+			if (constraints.type == 'fixed') {
+				output.push({
+					widget: child,
+					size: constraints.factor,
+				});
+			} else { // stretch
+				let percent = constraints.factor / totalStretch;
+				const size = Math.min(Math.round(percent * sizeForStretch), remainingSize);
+				output.push({
+					widget: child,
+					size: size,
+				});
+				remainingSize -= size;
+			}
+		}
+
+		return output;
+	}
+
 	addChild(widget, constraints) {
 		this.constraints_.push({ widget: widget, constraints: constraints });
 		return super.addChild(widget);
@@ -24,6 +67,38 @@ class LayoutWidget extends BaseWidget {
 		return false;
 	}
 
+	hvRender(direction) {
+		super.render();
+
+		const items = this.calculateSizes(direction == LayoutWidget.LAYOUT_HORIZONTAL ? this.innerWidth() : this.innerHeight());
+		const term = this.term();
+		let x = this.absoluteInnerX();
+		let y = this.absoluteInnerY();
+
+		for (let i = 0; i < items.length; i++) {
+			const item = items[i];
+
+			term.moveTo(x, y);
+
+			item.widget.setLocation(x, y);
+
+			if (direction == LayoutWidget.LAYOUT_HORIZONTAL) {
+				item.widget.setWidth(item.size);
+			} else {
+				item.widget.setHeight(item.size);
+			}
+			
+			if (direction == LayoutWidget.LAYOUT_HORIZONTAL) {
+				x += item.size;
+			} else {
+				y += item.size;
+			}
+		}
+	}
+
 }
+
+LayoutWidget.LAYOUT_HORIZONTAL = 1;
+LayoutWidget.LAYOUT_VERTICAL = 2;
 
 module.exports = LayoutWidget;

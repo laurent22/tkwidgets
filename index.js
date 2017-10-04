@@ -18,6 +18,7 @@ const ListWidget = require('./src/widgets/ListWidget.js');
 const TextWidget = require('./src/widgets/TextWidget.js');
 const ConsoleWidget = require('./src/widgets/ConsoleWidget.js');
 const HLayoutWidget = require('./src/widgets/HLayoutWidget.js');
+const VLayoutWidget = require('./src/widgets/VLayoutWidget.js');
 const RootWidget = require('./src/widgets/RootWidget.js');
 const WindowWidget = require('./src/widgets/WindowWidget.js');
 
@@ -98,13 +99,22 @@ async function main() {
 	textWidget.setText("# mon titre\n\du texte *en gras*\n\nSome long paragraph some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph ");
 	textWidget.setName('textWidget');
 
+	const listWidget3 = new ListWidget();
+	//listWidget3.setLocation(3, 20);
+	listWidget3.setItems(items2);
+	listWidget3.setName('listWidget3');
+
 	const layout1 = new HLayoutWidget();
-	layout1.addChild(listWidget1, { type: 'fixed', width: 15 });
-	layout1.addChild(listWidget2, { type: 'fixed', width: 15 });
+	layout1.addChild(listWidget1, { type: 'fixed', factor: 15 });
+	layout1.addChild(listWidget2, { type: 'fixed', factor: 15 });
 	layout1.addChild(textWidget, { type: 'stretch', factor: 1 });
 
+	const layout2 = new VLayoutWidget();
+	layout2.addChild(layout1, { type: 'stretch', factor: 1 });
+	layout2.addChild(listWidget3, { type: 'fixed', factor: 5 });
+
 	const win1 = new WindowWidget();
-	win1.addChild(layout1);
+	win1.addChild(layout2);
 	win1.setName('win1');
 	win1.setLocation(1,1);
 
