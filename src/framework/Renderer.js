@@ -22,25 +22,21 @@ class Renderer {
 	scheduleRender() {
 		if (this.renderTimeoutId_) return;
 
-		this.renderTimeoutId_ = setTimeout(async () => {
+		this.renderTimeoutId_ = setTimeout(() => {
 			this.renderTimeoutId_ = null;
-			await this.renderRoot();
+			this.renderRoot();
 		}, 30);
 	}
 
-	async renderWidget(widget) {
+	renderWidget(widget) {
 		const termutils = require('./termutils.js');
 
 		if (widget.invalidated()) {
-			ilog('Render: ' + widget.name());
-
 			if (widget.visible()) {
-				await widget.render();
-				//await termutils.msleep(500);
+				widget.render();
 			} else {
 				ilog(widget.x() + ', ' + widget.y() + ', ' + widget.width() + ', ' + widget.height());
-				await widget.clear();
-				//await termutils.msleep(500);
+				widget.clear();
 			}
 
 			widget.invalidated_ = false;
@@ -59,17 +55,17 @@ class Renderer {
 
 		let children = invisibleWidgets.concat(visibleWidgets);
 		for (let i = 0; i < children.length; i++) {
-			await this.renderWidget(children[i]);
+			this.renderWidget(children[i]);
 		}		
 	}
 
-	async renderRoot() {
+	renderRoot() {
 		if (this.renderTimeoutId_) {
 			clearTimeout(this.renderTimeoutId_);
 			this.renderTimeoutId_ = null;
 		}
 
-		await this.renderWidget(this.root());
+		this.renderWidget(this.root());
 	}
 
 }

@@ -1,20 +1,14 @@
 const BaseWidget = require('./BaseWidget.js');
 const termutils = require('../framework/termutils.js');
 
-class ListWidget extends BaseWidget {
+class ScrollableArea extends BaseWidget {
 
 	constructor() {
 		super();
-
-		this.items_ = [];
-		this.currentIndex_ = -1;
-		this.topIndex_ = 0;
-		this.itemMaxWidth_ = null;
-		this.separatorLine_ = 'none';
 	}
 
 	widgetType() {
-		return 'list';
+		return 'scrollableArea';
 	}
 
 	onKey(name, matches, data) {
@@ -122,8 +116,6 @@ class ListWidget extends BaseWidget {
 		let viewHeight = 0;
 
 		for (let i = this.topIndex(); i <= this.bottomIndex(); i++) {
-			if (i >= this.items_.length) break;
-			
 			let item = this.items_[i];
 
 			term.moveTo(cursorX, cursorY);

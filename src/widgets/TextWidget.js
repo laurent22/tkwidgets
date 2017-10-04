@@ -16,14 +16,6 @@ class TextWidget extends BaseWidget {
 		return true;
 	}
 
-	innerHeight() {
-		return this.height();
-	}
-
-	innerWidth() {
-		return this.width();
-	}
-
 	text() {
 		return this.text_;
 	}
@@ -39,10 +31,12 @@ class TextWidget extends BaseWidget {
 
 		const term = this.term();
 
-		this.clear();
+		this.innerClear();
 
-		let x = this.absoluteX();
-		let y = this.absoluteY();
+		let x = this.absoluteInnerX();
+		let y = this.absoluteInnerY();
+
+		ilog('Inner height: ' + this.innerHeight());
 
 		let text = this.text();
 
@@ -67,6 +61,9 @@ class TextWidget extends BaseWidget {
 
 			term.moveTo(x, y);
 			term(line);
+
+			if (y >= this.absoluteInnerY() + this.innerHeight() - 1) break;
+
 			y++;
 		}
 	}

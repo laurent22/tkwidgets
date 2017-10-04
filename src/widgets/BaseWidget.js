@@ -325,6 +325,13 @@ class BaseWidget {
 		}
 	}
 
+	innerClear() {
+		this.term().styleReset();
+		for (let y = 0; y < this.innerHeight(); y++) {
+			this.term().moveTo(this.innerX(), this.innerY() + y, ' '.repeat(this.innerWidth()));
+		}
+	}
+
 	drawBorder() {
 		const term = this.term();
 

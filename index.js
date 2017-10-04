@@ -3,6 +3,7 @@
 
 global.ilog = function(s) {
 	const fs = require('fs');
+	if (typeof s === 'object') s = JSON.stringify(s);
 	s = ((new Date()).getTime()) + ': ' + s;
 	fs.appendFileSync('log.txt', s + "\n");
 }
@@ -24,7 +25,7 @@ const WindowWidget = require('./src/widgets/WindowWidget.js');
 
 
 
-async function main() {
+function main() {
 
 	const tk = require('terminal-kit');
 	const term = tk.terminal;
@@ -88,16 +89,31 @@ async function main() {
 		borderRightWidth: 1,
 	});
 	listWidget1.setName('listWidget1');
+	listWidget1.setVStretch(true);
 
 	const listWidget2 = new ListWidget();
 	listWidget2.setLocation(25, 1);
 	listWidget2.setItems(items2);
 	listWidget2.setName('listWidget2');
+	listWidget2.setVStretch(true);
+	listWidget2.setStyle({
+		borderTopWidth: 1,
+		borderBottomWidth: 1,
+		borderLeftWidth: 1,
+		borderRightWidth: 1,
+	});
 
 	const textWidget = new TextWidget();
 	textWidget.setLocation(50, 1);
-	textWidget.setText("# mon titre\n\du texte *en gras*\n\nSome long paragraph some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph Some long paragraph ");
+	textWidget.setVStretch(true);
+	textWidget.setText("# mon titre\n\du texte *en gras*\n\n Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut ligula massa, elementum et pretium sit amet, ornare facilisis libero. Integer ut pharetra augue. Praesent luctus interdum lacus vel faucibus. Morbi mollis ac nulla ac euismod. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Morbi eu nibh augue. Ut at est malesuada, luctus tortor ac, tristique lacus. Donec vel nunc ut dui ultricies ultrices at sed odio. Morbi tempus tellus quis orci elementum consectetur id eu nibh.");
 	textWidget.setName('textWidget');
+	textWidget.setStyle({
+		borderTopWidth: 1,
+		borderBottomWidth: 1,
+		borderLeftWidth: 1,
+		borderRightWidth: 1,
+	});
 
 	const listWidget3 = new ListWidget();
 	//listWidget3.setLocation(3, 20);
@@ -105,16 +121,17 @@ async function main() {
 	listWidget3.setName('listWidget3');
 
 	const layout1 = new HLayoutWidget();
-	layout1.addChild(listWidget1, { type: 'fixed', factor: 15 });
-	layout1.addChild(listWidget2, { type: 'fixed', factor: 15 });
-	layout1.addChild(textWidget, { type: 'stretch', factor: 1 });
+	layout1.addChild(textWidget, { type: 'fixed', factor: 20 });
+	layout1.addChild(listWidget1, { type: 'stretch', factor: 60 });
+	layout1.addChild(listWidget2, { type: 'stretch', factor: 60 });
 
-	const layout2 = new VLayoutWidget();
-	layout2.addChild(layout1, { type: 'stretch', factor: 1 });
-	layout2.addChild(listWidget3, { type: 'fixed', factor: 5 });
+	// const layout2 = new VLayoutWidget();
+	// layout2.addChild(layout1, { type: 'stretch', factor: 1 });
+	// layout2.addChild(listWidget3, { type: 'fixed', factor: 5 });
 
 	const win1 = new WindowWidget();
-	win1.addChild(layout2);
+	//win1.addChild(layout2);
+	win1.addChild(layout1);
 	win1.setName('win1');
 	win1.setLocation(1,1);
 
@@ -122,6 +139,9 @@ async function main() {
 
 	renderer = new Renderer(term, rootWidget);
 	renderer.start();
+
+	ilog('Layout1: ' + layout1.width() + ', ' + layout1.height());
+	//ilog('Layout2: ' + layout2.width() + ', ' + layout2.height());
 
 
 
@@ -222,6 +242,4 @@ async function main() {
 	});
 }
 
-main().catch((error) => {
-	console.error(error);
-});
+main();

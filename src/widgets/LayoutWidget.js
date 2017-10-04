@@ -53,6 +53,7 @@ class LayoutWidget extends BaseWidget {
 
 	addChild(widget, constraints) {
 		this.constraints_.push({ widget: widget, constraints: constraints });
+		//widget.setStretch(false, false); // Once added to a layout, the size is managed by the layout
 		return super.addChild(widget);
 	}
 
