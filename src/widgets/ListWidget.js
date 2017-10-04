@@ -51,12 +51,6 @@ class ListWidget extends BaseWidget {
 		return this.items_.length - this.innerHeight();
 	}
 
-	indexIsOffView(index) {
-		if (index < this.topIndex()) return true;
-		if (index > this.bottomIndex()) return true;
-		return false;
-	}
-
 	setCurrentIndex(v) {
 		if (v < 0) v = 0;
 		if (v >= this.items_.length) v = this.items_.length - 1;
