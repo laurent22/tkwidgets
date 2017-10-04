@@ -6,6 +6,11 @@ class VLayoutWidget extends LayoutWidget {
 		return 'vlayout';
 	}
 
+	addChild(widget, constraints) {
+		widget.setVStretch(false); // Once added to a layout, the size is managed by the layout
+		return super.addChild(widget, constraints);
+	}
+
 	render() {
 		return this.hvRender(LayoutWidget.LAYOUT_VERTICAL);
 	}

@@ -6,6 +6,11 @@ class HLayoutWidget extends LayoutWidget {
 		return 'hlayout';
 	}
 
+	addChild(widget, constraints) {
+		widget.setHStretch(false); // Once added to a layout, the size is managed by the layout
+		return super.addChild(widget, constraints);
+	}
+
 	render() {
 		return this.hvRender(LayoutWidget.LAYOUT_HORIZONTAL);
 	}
