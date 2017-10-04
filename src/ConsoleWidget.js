@@ -1,5 +1,5 @@
 const BaseWidget = require('./BaseWidget.js');
-const termutils = require('../framework/termutils.js');
+const termutils = require('./framework/termutils.js');
 
 class ConsoleWidget extends BaseWidget {
 

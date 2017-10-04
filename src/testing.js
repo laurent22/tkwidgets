@@ -12,16 +12,16 @@ global.ilog = function(s) {
 ilog('=======================================================');
 
 
-const termutils = require('./src/framework/termutils.js');
-const Renderer = require('./src/framework/Renderer.js');
+const termutils = require('./framework/termutils.js');
+const Renderer = require('./framework/Renderer.js');
 
-const ListWidget = require('./src/widgets/ListWidget.js');
-const TextWidget = require('./src/widgets/TextWidget.js');
-const ConsoleWidget = require('./src/widgets/ConsoleWidget.js');
-const HLayoutWidget = require('./src/widgets/HLayoutWidget.js');
-const VLayoutWidget = require('./src/widgets/VLayoutWidget.js');
-const RootWidget = require('./src/widgets/RootWidget.js');
-const WindowWidget = require('./src/widgets/WindowWidget.js');
+const ListWidget = require('./ListWidget.js');
+const TextWidget = require('./TextWidget.js');
+const ConsoleWidget = require('./ConsoleWidget.js');
+const HLayoutWidget = require('./HLayoutWidget.js');
+const VLayoutWidget = require('./VLayoutWidget.js');
+const RootWidget = require('./RootWidget.js');
+const WindowWidget = require('./WindowWidget.js');
 
 
 

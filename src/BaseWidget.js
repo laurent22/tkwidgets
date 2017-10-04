@@ -1,4 +1,4 @@
-const termutils = require('../framework/termutils.js');
+const termutils = require('./framework/termutils.js');
 
 class BaseWidget {
 
