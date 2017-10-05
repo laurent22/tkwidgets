@@ -1,3 +1,5 @@
+const termutils = require('./termutils.js');
+
 class Renderer {
 
 	constructor(term, root) {
@@ -29,8 +31,6 @@ class Renderer {
 	}
 
 	renderWidget(widget) {
-		const termutils = require('./termutils.js');
-
 		if (widget.invalidated()) {
 			if (widget.visible()) {
 				widget.render();

@@ -1,5 +1,7 @@
 const BaseWidget = require('./BaseWidget.js');
 const termutils = require('./framework/termutils.js');
+const stringWidth = require('string-width');
+const emoji = require('node-emoji');
 
 class ListWidget extends BaseWidget {
 
@@ -64,6 +66,7 @@ class ListWidget extends BaseWidget {
 			this.setBottomIndex(this.currentIndex_);
 		}
 
+		this.onCurrentItemChange();
 		this.invalidate();
 	}
 
@@ -87,10 +90,21 @@ class ListWidget extends BaseWidget {
 		return this.currentIndex_;
 	}
 
+	currentItem() {
+		const i = this.currentIndex();
+		return i >= 0 && i < this.items_.length ? this.items_[i] : null;
+	}
+
+	onCurrentItemChange() {
+		this.eventEmitter().emit('currentItemChange');
+	}
+
 	setItems(items) {
 		this.items_ = items;
 		this.itemMaxWidth_ = null;
-		if (this.currentIndex_ < 0 && this.items_.length) this.currentIndex_ = 0;
+		this.currentIndex_ = this.items_.length ? 0 : -1;
+		this.onCurrentItemChange();
+		this.invalidate();
 	}
 
 	setItemRenderer(callback) {
@@ -110,10 +124,16 @@ class ListWidget extends BaseWidget {
 	}
 
 	formatItemLabel(label, width) {
-		if (label.length < width) {
-			return label + ' '.repeat(width - label.length);
+		// Currently emojis don't work properly in Windows terminals (width cannot
+		// be reliably determined) so convert them to plain text. Maybe emojis could
+		// be enabled depending on the terminal or operating system (it might
+		// work on MacOS).
+		label = emoji.unemojify(label).trim();
+		const labelWidth = stringWidth(label);
+		if (labelWidth < width) {
+			return label + '.'.repeat(width - labelWidth);
 		} else {
-			return label.substr(width);
+			return label.substr(0, width);
 		}
 	}
 
@@ -126,6 +146,8 @@ class ListWidget extends BaseWidget {
 		let cursorY = this.absoluteInnerY();
 		let itemWidth = this.innerWidth();
 		let viewHeight = 0;
+
+		this.innerClear();
 
 		for (let i = this.topIndex(); i <= this.bottomIndex(); i++) {
 			if (i >= this.items_.length) break;
@@ -146,7 +168,8 @@ class ListWidget extends BaseWidget {
 				term.styleReset();
 			}
 
-			const itemLabel = this.itemRenderer_ ? this.itemRenderer_(item) : item.label;
+			const itemLabel = this.itemRenderer_ ? this.itemRenderer_(item) : item;
+			if (typeof itemLabel !== 'string') throw new Error('Non-string item list label at index ' + i);
 			term(this.formatItemLabel(itemLabel, itemWidth));
 
 			cursorY++;

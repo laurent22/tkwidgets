@@ -1,4 +1,5 @@
 const termutils = require('./framework/termutils.js');
+const EventEmitter = require('events');
 
 class BaseWidget {
 
@@ -20,8 +21,18 @@ class BaseWidget {
 		this.name_ = '';
 		this.hStretch_ = false;
 		this.vStretch_ = false;
+		this.eventEmitter_ = null;
 
 		this.invalidate();
+	}
+
+	on(eventName, callback) {
+		return this.eventEmitter().on(eventName, callback);
+	}
+
+	eventEmitter() {
+		if (!this.eventEmitter_) this.eventEmitter_ = new EventEmitter();
+		return this.eventEmitter_;
 	}
 
 	onTermReady() {
@@ -103,6 +114,18 @@ class BaseWidget {
 
 	childCount() {
 		return this.children_.length;
+	}
+
+	childByName(name, recurse = true) {
+		for (let i = 0; i < this.childCount(); i++) {
+			let child = this.childAt(i);
+			if (child.name() == name) return child;
+			if (recurse) {
+				let c = child.childByName(name);
+				if (c) return c;
+			}
+		}
+		return null;
 	}
 
 	id() {

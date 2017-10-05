@@ -55,16 +55,16 @@ function main() {
 	}
 
 	let items2 = [
-		{ label: "22_un", },
-		{ label: "22_deux", },
-		{ label: "22_trois", },
-		{ label: "22_quatre", },
-		{ label: "22_cinq", },
-		{ label: "22_six", },
-		{ label: "22_setp", },
-		{ label: "22_heigt", },
-		{ label: "22_nuef", },
-		{ label: "22_dix", },
+		"22_un",
+		"22_deux",
+		"22_trois",
+		"22_quatre",
+		"22_cinq",
+		"22_six",
+		"22_setp",
+		"22_heigt",
+		"22_nuef",
+		"22_dix",
 	];
 
 	let customItems = [
@@ -87,9 +87,7 @@ function main() {
 
 	const listWidget1 = new ListWidget();
 	listWidget1.setItems(customItems);
-	listWidget1.setItemRenderer((item) => {
-		return item.title + ' (' + item.id + ')';
-	});
+	listWidget1.setItemRenderer((item) => { return item.title + ' (' + item.id + ')'; });
 	listWidget1.setLocation(1, 1);
 	listWidget1.setStyle({
 		borderTopWidth: 1,
@@ -99,6 +97,9 @@ function main() {
 	});
 	listWidget1.setName('listWidget1');
 	listWidget1.setVStretch(true);
+	listWidget1.on('currentItemChange', function() {
+		ilog(listWidget1.currentItem());
+	});
 
 	const listWidget2 = new ListWidget();
 	listWidget2.setLocation(25, 1);
