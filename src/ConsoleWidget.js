@@ -7,6 +7,7 @@ class ConsoleWidget extends BaseWidget {
 		super();
 		this.buffer_ = [];
 		this.prompt_ = '> ';
+		this.waitForResult_ = null;
 	}
 
 	widgetType() {
@@ -27,6 +28,36 @@ class ConsoleWidget extends BaseWidget {
 	onFocus() {
 		super.onFocus();
 		this.window().disableFocusChange();
+	}
+
+	prompt() {
+		return this.prompt_;
+	}
+
+	// Allows asking a question, and waiting for the answer. Once this is done, the prompt
+	// is reversed to its previous value.
+	waitForResult(message) {
+		if (this.waitForResult_) throw new Error('Another command already waiting for result');
+
+		this.waitForResult_ = {
+			promise: null,
+			previousPrompt: this.prompt(),
+		};
+
+		this.setPrompt(message + ' ');
+
+		this.waitForResult_.promise = new Promise((resolve, reject) => {
+			this.waitForResult_.resolve = resolve;
+			this.waitForResult_.reject = reject;
+		});
+
+		return this.waitForResult_.promise;
+	}
+
+	setPrompt(v) {
+		if (this.prompt_ === v) return;
+		this.prompt_ = v;
+		this.invalidate();
 	}
 
 	bufferPush(s) {
@@ -78,9 +109,11 @@ class ConsoleWidget extends BaseWidget {
 			y++;
 		}
 
+		const prompt = this.prompt();
+
 		term.moveTo(x, y);
-		term(this.prompt_ + ' '.repeat(innerWidth - this.prompt_.length));
-		term.moveTo(x + 2, y);
+		term(prompt + ' '.repeat(innerWidth - prompt.length));
+		term.moveTo(x + prompt.length, y);
 
 		if (this.hasFocus()) {	
 			const cursorWasShown = termutils.cursorShown(term);
@@ -91,16 +124,31 @@ class ConsoleWidget extends BaseWidget {
 			term.inputField(options, (error, input) => {
 				termutils.showCursor(term, cursorWasShown);
 
+				const wfr = this.waitForResult_;
+				this.waitForResult_ = null;
+
 				if (input === undefined) { // User cancel
 					this.window().enableFocusChange();
 					this.window().focusLast();
-					this.eventEmitter().emit('cancel');
-					return;
+
+					if (wfr) {
+						wfr.resolve(null);
+					} else {
+						this.eventEmitter().emit('cancel');
+					}
+				} else {
+					this.bufferPush(prompt + input);
+
+					if (wfr) {
+						wfr.resolve(input);
+					} else {
+						this.eventEmitter().emit('accept', { input: input });
+					}
 				}
 
-				this.bufferPush(this.prompt_ + input);
-
-				this.eventEmitter().emit('accept', { input: input });
+				if (wfr) {
+					this.setPrompt(wfr.previousPrompt);
+				}
 
 				this.invalidate();
 			});
