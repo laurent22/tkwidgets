@@ -15,6 +15,20 @@ class ListWidget extends BaseWidget {
 		this.itemRenderer_ = null;
 	}
 
+	get items() {
+		return this.items_;
+	}
+
+	set items(v) {
+		if (this.items_ === v) return;
+
+		this.items_ = v;
+		this.itemMaxWidth_ = null;
+		this.currentIndex_ = this.items_.length ? 0 : -1;
+		this.onCurrentItemChange();
+		this.invalidate();
+	}
+
 	widgetType() {
 		return 'list';
 	}
@@ -53,7 +67,27 @@ class ListWidget extends BaseWidget {
 		return this.items_.length - this.innerHeight();
 	}
 
-	setCurrentIndex(v) {
+	selectUp() {
+		this.currentIndex = this.currentIndex - 1;
+	}
+
+	selectDown() {
+		this.currentIndex = this.currentIndex + 1;
+	}
+
+	scrollDown() {
+		this.setTopIndex(this.topIndex_ + 1);
+	}
+
+	scrollUp() {
+		this.setTopIndex(this.topIndex_ - 1);
+	}
+
+	get currentIndex() {
+		return this.currentIndex_;
+	}
+
+	set currentIndex(v) {
 		if (v < 0) v = 0;
 		if (v >= this.items_.length) v = this.items_.length - 1;
 		if (v === this.currentIndex_) return;
@@ -70,60 +104,28 @@ class ListWidget extends BaseWidget {
 		this.invalidate();
 	}
 
-	selectUp() {
-		this.setCurrentIndex(this.currentIndex() - 1);
-	}
-
-	selectDown() {
-		this.setCurrentIndex(this.currentIndex() + 1);
-	}
-
-	scrollDown() {
-		this.setTopIndex(this.topIndex_ + 1);
-	}
-
-	scrollUp() {
-		this.setTopIndex(this.topIndex_ - 1);
-	}
-
-	currentIndex() {
-		return this.currentIndex_;
-	}
-
-	currentItem() {
-		const i = this.currentIndex();
+	get currentItem() {
+		const i = this.currentIndex;
 		return i >= 0 && i < this.items_.length ? this.items_[i] : null;
 	}
 
 	setCurrentItem(v) {
-		const c = this.currentItem();
+		const c = this.currentItem;
 		if (v === c) return;
-		this.items_[this.currentIndex()] = v;
+		this.items_[this.currentIndex] = v;
 		this.invalidate();
 	}
+
+	// itemIndexByKey(key, value) {
+	// 	for (let i = 0; i < this.items_.length; i++) {
+	// 		const item = this.items_[i];
+	// 		if (typeof item === 'object' && item[key] === value) return i;
+	// 	}
+	// 	return -1;
+	// }
 
 	onCurrentItemChange() {
 		this.eventEmitter().emit('currentItemChange');
-	}
-
-	setItems(items) {
-		this.items_ = items;
-		this.itemMaxWidth_ = null;
-		this.currentIndex_ = this.items_.length ? 0 : -1;
-		this.onCurrentItemChange();
-		this.invalidate();
-	}
-
-	items() {
-		return this.items_;
-	}
-
-	setItemAt(index, item) {
-		if (this.items_[index] === item) return;
-
-		this.items_[index] = item;
-		// TODO: no need to invalidate if the item is off-screens
-		this.invalidate();
 	}
 
 	setItemRenderer(callback) {
@@ -175,7 +177,7 @@ class ListWidget extends BaseWidget {
 
 			term.moveTo(cursorX, cursorY);
 
-			if (i == this.currentIndex()) {
+			if (i == this.currentIndex) {
 				if (this.hasKeyboard()) {
 					term.bgWhite();
 					term.black();

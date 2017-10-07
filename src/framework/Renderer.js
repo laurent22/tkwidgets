@@ -1,12 +1,18 @@
 const termutils = require('./termutils.js');
+const EventEmitter = require('events');
 
 class Renderer {
 
 	constructor(term, root) {
 		this.term_ = term;
 		this.root_ = root;
+		this.eventEmitter_ = new EventEmitter();
 		this.root_.setRenderer(this);
 		this.root_.onTermReady();
+	}
+
+	on(eventName, callback) {
+		return this.eventEmitter_.on(eventName, callback);
 	}
 
 	term() {
@@ -65,6 +71,8 @@ class Renderer {
 		}
 
 		this.renderWidget(this.root());
+
+		this.eventEmitter_.emit('renderDone');
 	}
 
 }

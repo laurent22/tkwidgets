@@ -20,11 +20,11 @@ class TextWidget extends BaseWidget {
 		return true;
 	}
 
-	text() {
+	get text() {
 		return this.text_;
 	}
 
-	setText(v) {
+	set text(v) {
 		if (this.text_ === v) return;
 		this.text_ = v;
 		this.updateMarkdown_ = true;
@@ -85,7 +85,7 @@ class TextWidget extends BaseWidget {
 		let x = this.absoluteInnerX();
 		let y = this.absoluteInnerY();
 
-		let text = this.text();
+		let text = this.text;
 
 		if (this.markdownRendering_) {
 			if (this.updateMarkdown_) {

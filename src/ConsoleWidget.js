@@ -8,6 +8,8 @@ class ConsoleWidget extends BaseWidget {
 		this.buffer_ = [];
 		this.prompt_ = '> ';
 		this.waitForResult_ = null;
+		this.promptCursorPos_ = null;
+		this.history_ = [];
 	}
 
 	widgetType() {
@@ -32,6 +34,10 @@ class ConsoleWidget extends BaseWidget {
 
 	prompt() {
 		return this.prompt_;
+	}
+
+	history() {
+		return this.history_;
 	}
 
 	// Allows asking a question, and waiting for the answer. Once this is done, the prompt
@@ -81,6 +87,13 @@ class ConsoleWidget extends BaseWidget {
 		this.invalidate();
 	}
 
+	// Convenience function to move the cursor back at the prompt. Useful when drawing something
+	// on the terminal (which moves the cursor around) while the console is active.
+	resetCursor() {
+		if (!this.hasFocus() || this.promptCursorPos_ === null) return;
+		this.term().moveTo(this.promptCursorPos_.x, this.promptCursorPos_.y);
+	}
+
 	render() {
 		super.render();
 
@@ -113,13 +126,18 @@ class ConsoleWidget extends BaseWidget {
 
 		term.moveTo(x, y);
 		term(prompt + ' '.repeat(innerWidth - prompt.length));
-		term.moveTo(x + prompt.length, y);
+
+		this.promptCursorPos_ = { x: x + prompt.length, y: y };
+		term.moveTo(this.promptCursorPos_.x, this.promptCursorPos_.y);
 
 		if (this.hasFocus()) {	
 			const cursorWasShown = termutils.cursorShown(term);
 			termutils.showCursor(term);
 
-			let options = { cancelable: true };
+			let options = {
+				cancelable: true,
+				history: this.history(),
+			};
 
 			term.inputField(options, (error, input) => {
 				termutils.showCursor(term, cursorWasShown);
@@ -142,6 +160,7 @@ class ConsoleWidget extends BaseWidget {
 					if (wfr) {
 						wfr.resolve(input);
 					} else {
+						this.history_.push(input);
 						this.eventEmitter().emit('accept', { input: input });
 					}
 				}
