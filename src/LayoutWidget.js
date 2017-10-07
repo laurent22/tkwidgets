@@ -63,6 +63,15 @@ class LayoutWidget extends BaseWidget {
 		return {};
 	}
 
+	setWidgetConstraints(widget, constraints) {
+		for (let i = 0; i < this.constraints_.length; i++) {
+			if (this.constraints_[i].widget === widget) {
+				this.constraints_[i].constraints = constraints;
+			}
+		}
+		this.invalidate();
+	}
+
 	canHaveFocus() {
 		return false;
 	}

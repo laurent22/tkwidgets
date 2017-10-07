@@ -18,11 +18,11 @@ class WindowWidget extends BaseWidget {
 			if (!this.isActiveWindow()) return;
 
 			if (this.focusChangeEnabled_ && name === 'TAB') {
-				this.focusNext();
+				this.tabNext();
 			}
 
 			if (this.focusChangeEnabled_ && name === 'SHIFT_TAB') {
-				this.focusPrevious();
+				this.tabPrevious();
 			}
 		});
 	}
@@ -63,19 +63,19 @@ class WindowWidget extends BaseWidget {
 		WindowWidget.activeWindow_ = this;
 	}
 
-	searchFocusableWidgets(parent) {
+	searchTabableWidgets_(parent) {
 		let output = [];
-		if (parent.canHaveFocus()) output.push(parent);
+		if (parent.canHaveFocus() && parent.tabIndex() >= 0) output.push(parent);
 		for (let i = 0; i < parent.childCount(); i++) {
 			const child = parent.childAt(i);
-			let r = this.searchFocusableWidgets(child);
+			let r = this.searchTabableWidgets_(child);
 			output = output.concat(r);			
 		}
 		return output;
 	}
 
-	focusableWidgets() {
-		return this.searchFocusableWidgets(this);
+	tabableWidgets_() {
+		return this.searchTabableWidgets_(this);
 	}
 
 	focusWidget(widget) {
@@ -102,11 +102,11 @@ class WindowWidget extends BaseWidget {
 		this.lastFocusedWidget_ = this.focusedWidget_;
 		this.focusedWidget_ = null;
 
-		this.focusNext();
+		this.tabNext();
 	}
 
-	focusableWidgetByOffset(offset) {
-		let widgets = this.focusableWidgets();
+	tabableWidgetByOffset_(offset) {
+		let widgets = this.tabableWidgets_();
 
 		if (!widgets.length) return null;
 		if (widgets.length === 1) return widgets[0];
@@ -125,12 +125,12 @@ class WindowWidget extends BaseWidget {
 		return null;
 	}
 
-	nextFocusWidget() {
-		return this.focusableWidgetByOffset(+1);
+	nextTabableWidget_() {
+		return this.tabableWidgetByOffset_(+1);
 	}
 
-	previousFocusWidget() {
-		return this.focusableWidgetByOffset(-1);
+	previousTabableWidget_() {
+		return this.tabableWidgetByOffset_(-1);
 	}
 
 	widgetHasFocus(widget) {
@@ -145,12 +145,12 @@ class WindowWidget extends BaseWidget {
 		return this.focusedWidget_;
 	}
 
-	focusNext() {
-		this.focusWidget(this.nextFocusWidget());
+	tabNext() {
+		this.focusWidget(this.nextTabableWidget_());
 	}
 
-	focusPrevious() {
-		this.focusWidget(this.previousFocusWidget());
+	tabPrevious() {
+		this.focusWidget(this.previousTabableWidget_());
 	}
 
 	focusLast() {

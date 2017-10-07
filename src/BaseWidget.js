@@ -22,12 +22,34 @@ class BaseWidget {
 		this.hStretch_ = false;
 		this.vStretch_ = false;
 		this.eventEmitter_ = null;
+		this.tabIndex_ = 0;
 
 		this.invalidate();
 	}
 
+	logger() {
+		if (!BaseWidget.logger_) return {
+			info: (...o) => {},
+			error: (...o) => {},
+			warn: (...o) => {},
+			debug: (...o) => {},
+		};
+
+		return BaseWidget.logger_;
+	}
+
 	on(eventName, callback) {
 		return this.eventEmitter().on(eventName, callback);
+	}
+
+	setTabIndex(v) {
+		if (this.tabIndex_ === v) return;
+		this.tabIndex_ = v;
+		this.invalidate();
+	}
+
+	tabIndex() {
+		return this.tabIndex_;
 	}
 
 	eventEmitter() {
@@ -417,5 +439,9 @@ class BaseWidget {
 	}
 
 };
+
+BaseWidget.setLogger = function(v) {
+	BaseWidget.logger_ = v;
+}
 
 module.exports = BaseWidget;

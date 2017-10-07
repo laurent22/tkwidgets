@@ -95,6 +95,13 @@ class ListWidget extends BaseWidget {
 		return i >= 0 && i < this.items_.length ? this.items_[i] : null;
 	}
 
+	setCurrentItem(v) {
+		const c = this.currentItem();
+		if (v === c) return;
+		this.items_[this.currentIndex()] = v;
+		this.invalidate();
+	}
+
 	onCurrentItemChange() {
 		this.eventEmitter().emit('currentItemChange');
 	}
@@ -104,6 +111,18 @@ class ListWidget extends BaseWidget {
 		this.itemMaxWidth_ = null;
 		this.currentIndex_ = this.items_.length ? 0 : -1;
 		this.onCurrentItemChange();
+		this.invalidate();
+	}
+
+	items() {
+		return this.items_;
+	}
+
+	setItemAt(index, item) {
+		if (this.items_[index] === item) return;
+
+		this.items_[index] = item;
+		// TODO: no need to invalidate if the item is off-screens
 		this.invalidate();
 	}
 
@@ -131,7 +150,7 @@ class ListWidget extends BaseWidget {
 		label = emoji.unemojify(label).trim();
 		const labelWidth = stringWidth(label);
 		if (labelWidth < width) {
-			return label + '.'.repeat(width - labelWidth);
+			return label + ' '.repeat(width - labelWidth);
 		} else {
 			return label.substr(0, width);
 		}
