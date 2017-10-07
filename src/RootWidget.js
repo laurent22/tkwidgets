@@ -12,7 +12,7 @@ class RootWidget extends BaseWidget {
 	}
 
 	widgetType() {
-		return 'view';
+		return 'root';
 	}
 
 }

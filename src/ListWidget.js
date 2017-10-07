@@ -25,7 +25,6 @@ class ListWidget extends BaseWidget {
 		this.items_ = v;
 		this.itemMaxWidth_ = null;
 		this.currentIndex_ = this.items_.length ? 0 : -1;
-		this.onCurrentItemChange();
 		this.invalidate();
 	}
 
@@ -116,13 +115,13 @@ class ListWidget extends BaseWidget {
 		this.invalidate();
 	}
 
-	// itemIndexByKey(key, value) {
-	// 	for (let i = 0; i < this.items_.length; i++) {
-	// 		const item = this.items_[i];
-	// 		if (typeof item === 'object' && item[key] === value) return i;
-	// 	}
-	// 	return -1;
-	// }
+	itemIndexByKey(key, value) {
+		for (let i = 0; i < this.items_.length; i++) {
+			const item = this.items_[i];
+			if (typeof item === 'object' && item[key] === value) return i;
+		}
+		return -1;
+	}
 
 	onCurrentItemChange() {
 		this.eventEmitter().emit('currentItemChange');

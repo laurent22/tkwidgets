@@ -30,14 +30,22 @@ class Renderer {
 	scheduleRender() {
 		if (this.renderTimeoutId_) return;
 
-		this.renderTimeoutId_ = setTimeout(() => {
+		this.renderTimeoutId_ = setTimeout(async () => {
 			this.renderTimeoutId_ = null;
-			this.renderRoot();
+			await this.renderRoot();
 		}, 30);
 	}
 
-	renderWidget(widget) {
+	async renderWidget(widget) {
 		if (widget.invalidated()) {
+
+			// This optional async willRender() method can be used
+			// by the widget to load any required data before the
+			// actual rendering. Rendering itself is always synchronous.
+			if (widget.willRender) {
+				await widget.willRender();
+			}
+
 			if (widget.visible()) {
 				widget.render();
 			} else {
@@ -64,13 +72,13 @@ class Renderer {
 		}		
 	}
 
-	renderRoot() {
+	async renderRoot() {
 		if (this.renderTimeoutId_) {
 			clearTimeout(this.renderTimeoutId_);
 			this.renderTimeoutId_ = null;
 		}
 
-		this.renderWidget(this.root());
+		await this.renderWidget(this.root());
 
 		this.eventEmitter_.emit('renderDone');
 	}
