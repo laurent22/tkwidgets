@@ -11,8 +11,6 @@ global.ilog = function(s) {
 
 ilog('=======================================================');
 
-ilog(process.platform);
-
 
 const termutils = require('./framework/termutils.js');
 const Renderer = require('./framework/Renderer.js');
@@ -86,20 +84,32 @@ function main() {
 
 
 	const rootWidget = new RootWidget();
-	rootWidget.setName('rootWidget');
+	rootWidget.name = 'rootWidget';
 
 	const textWidget = new TextWidget();
 	
 	//textWidget.setText('Now is the time');	
 
 	//textWidget.setText("# mon titre\n\du texte *en gras*\n\n Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut ligula massa, elementum et pretium sit amet, ornare facilisis libero. Integer ut pharetra augue. Praesent luctus interdum lacus vel faucibus. Morbi mollis ac nulla ac euismod. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Morbi eu nibh augue. Ut at est malesuada, luctus tortor ac, tristique lacus. Donec vel nunc ut dui ultricies ultrices at sed odio. Morbi tempus tellus quis orci elementum consectetur id eu nibh FIN.");
-	textWidget.setText('# Longlongtitle\n\nAs they rounded a bend in the path that ran beside the *river*, Lara recognized the *silhouette* of a fig tree atop a nearby hill. The weather was hot and the days were long. The fig tree was in full leaf, but not yet bearing fruit.');
+	//textWidget.text = '# Longlongtitle\n\nAs they rounded a bend in the path that ran beside the *river*, Lara recognized the *silhouette* of a fig tree atop a nearby hill. The weather was hot and the days were long. The fig tree was in full leaf, but not yet bearing fruit.';
+
+	//textWidget.text = "# title\n\n* Lorem ipsum dolor sit amet\n* Item consectetur adipiscing elit.\n* Ut ligula massa, elementum et\n* pretium sit amet, ornare facilisis libero\n\n\n1. one one one one one one one one\n2. two two two two two two two two\n3. ThreeThreeThreeThreeThreeThreeThreeThree";
+
+	//textWidget.text = "* ul item item item item item item item \n    * ul item 2\n    * ul item 3";
+
+	textWidget.text = "* ul item item item item item item item \n    * ul item 2\n    * ul item 3";
+
+	//textWidget.text = "  some spaces some spaces some spaces some spaces some spaces ";
+
+	//textWidget.text = "# title\n\n* Lorem ipsum dolor sit amet\n* Item consectetur adipiscing elit.\n* Ut ligula massa, elementum et\n* pretium sit amet, ornare facilisis libero";
+
+	//textWidget.text = "O Item1234 456";
 
 	//textWidget.setText("1234567890 1234567890");
 	//textWidget.setText("123456789 1234 56789");
-	textWidget.setName('textWidget');
-	textWidget.setWidth(10);
-	textWidget.setHeight(20);
+	textWidget.name = 'textWidget';
+	textWidget.setWidth(30);
+	textWidget.setVStretch(true);
 	textWidget.setStyle({
 		borderTopWidth: 1,
 		borderBottomWidth: 1,
@@ -109,14 +119,12 @@ function main() {
 
 	const win1 = new WindowWidget();
 	win1.addChild(textWidget);
-	win1.setName('win1');
+	win1.name = 'win1';
 
 	rootWidget.addChild(win1);
 
 	renderer = new Renderer(term, rootWidget);
 	renderer.start();
-
-	
 
 
 

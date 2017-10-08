@@ -1,6 +1,6 @@
-const BaseWidget = require('./BaseWidget.js');
+const RootWidget = require('./RootWidget.js');
 
-class ReduxRootWidget extends BaseWidget {
+class ReduxRootWidget extends RootWidget {
 
 	constructor(store) {
 		super();

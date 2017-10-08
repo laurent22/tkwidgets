@@ -4,7 +4,7 @@
   "dependencies": {
     "fs-extra": "^4.0.2",
     "marked": "^0.3.6",
-    "marked-terminal": "^2.0.0",
+    "marked-terminal": "https://github.com/laurent22/marked-terminal",
     "node-emoji": "^1.8.1",
     "string-width": "^2.1.1",
     "terminal-kit": "^1.13.11"

@@ -76,6 +76,10 @@ class BaseWidget {
 		this.lifeCycleState_ = 'ready';
 	}
 
+	onResize() {
+		this.invalidate();
+	}
+
 	isActiveWindow() {
 		let win = this.window();
 		return win ? win.isActiveWindow() : false;
@@ -141,7 +145,7 @@ class BaseWidget {
 	childByName(name, recurse = true) {
 		for (let i = 0; i < this.childCount(); i++) {
 			let child = this.childAt(i);
-			if (child.name() == name) return child;
+			if (child.name == name) return child;
 			if (recurse) {
 				let c = child.childByName(name);
 				if (c) return c;
@@ -154,12 +158,12 @@ class BaseWidget {
 		return this.id_;
 	}
 
-	setName(name) {
-		this.name_ = name;
+	get name() {
+		return this.name_;
 	}
 
-	name() {
-		return this.name_;
+	set name(name) {
+		this.name_ = name;
 	}
 
 	setStretch(h, v) {

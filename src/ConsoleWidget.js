@@ -10,6 +10,8 @@ class ConsoleWidget extends BaseWidget {
 		this.waitForResult_ = null;
 		this.promptCursorPos_ = null;
 		this.history_ = [];
+		this.initialText_ = '';
+		this.inputActive_ = false;
 	}
 
 	widgetType() {
@@ -25,6 +27,12 @@ class ConsoleWidget extends BaseWidget {
 		// because TAB might needed to be interpreted by it. Default key
 		// to exit the console is ESC.
 		return -1;
+	}
+
+	focus(initialText = null) {
+		this.initialText_ = initialText === null ? '' : initialText;
+		super.focus();
+		this.invalidate();
 	}
 
 	onFocus() {
@@ -56,6 +64,8 @@ class ConsoleWidget extends BaseWidget {
 			this.waitForResult_.resolve = resolve;
 			this.waitForResult_.reject = reject;
 		});
+
+		this.logger().debug('Doing waitForResult: ' + message);
 
 		return this.waitForResult_.promise;
 	}
@@ -131,42 +141,58 @@ class ConsoleWidget extends BaseWidget {
 		term.moveTo(this.promptCursorPos_.x, this.promptCursorPos_.y);
 
 		if (this.hasFocus()) {	
+
+			if (this.inputActive_) {
+				this.logger().warn('ConsoleWidget: Trying to activate input field while being already active');
+				return;
+			}
+
 			const cursorWasShown = termutils.cursorShown(term);
 			termutils.showCursor(term);
 
 			let options = {
 				cancelable: true,
 				history: this.history(),
+				default: this.initialText_,
 			};
+
+			this.initialText_ = '';			
+			this.inputActive_ = true;
 
 			term.inputField(options, (error, input) => {
 				termutils.showCursor(term, cursorWasShown);
 
-				const wfr = this.waitForResult_;
-				this.waitForResult_ = null;
+				this.inputActive_ = false;
 
-				if (input === undefined) { // User cancel
-					this.window().enableFocusChange();
-					this.window().focusLast();
-
-					if (wfr) {
-						wfr.resolve(null);
-					} else {
-						this.eventEmitter().emit('cancel');
-					}
+				if (error) {
+					this.logger().error('ConsoleWidget:', error);
 				} else {
-					this.bufferPush(prompt + input);
+					const wfr = this.waitForResult_;
+					this.waitForResult_ = null;
+
+					if (input === undefined) { // User cancel
+						this.window().enableFocusChange();
+						this.window().focusLast();
+
+						if (wfr) {
+							wfr.resolve(null);
+						} else {
+							this.eventEmitter().emit('cancel');
+						}
+					} else {
+						this.bufferPush(prompt + input);
+
+						if (wfr) {
+							wfr.resolve(input);
+						} else {
+							if (input && input.trim() != '') this.history_.push(input);
+							this.eventEmitter().emit('accept', { input: input });
+						}
+					}
 
 					if (wfr) {
-						wfr.resolve(input);
-					} else {
-						this.history_.push(input);
-						this.eventEmitter().emit('accept', { input: input });
+						this.setPrompt(wfr.previousPrompt);
 					}
-				}
-
-				if (wfr) {
-					this.setPrompt(wfr.previousPrompt);
 				}
 
 				this.invalidate();

@@ -84,6 +84,7 @@ class TextWidget extends BaseWidget {
 
 		let x = this.absoluteInnerX();
 		let y = this.absoluteInnerY();
+		const innerWidth = this.innerWidth();
 
 		let text = this.text;
 
@@ -116,7 +117,7 @@ class TextWidget extends BaseWidget {
 			const line = lines[i];
 
 			term.moveTo(x, y);
-			term(line);
+			term(line.substr(0, innerWidth));
 
 			if (y >= this.absoluteInnerY() + this.innerHeight() - 1) break;
 			y++;
