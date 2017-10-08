@@ -60,6 +60,7 @@ class BaseWidget {
 	onTermReady() {
 		if (this.canHaveFocus()) {
 			this.term().on('key', (name, matches, data) => {
+				if (this.root() && this.root().allInputDisabled()) return;
 				if (!this.hasKeyboard()) return;
 				this.onKey(name, matches, data);
 			});
@@ -83,6 +84,16 @@ class BaseWidget {
 	isActiveWindow() {
 		let win = this.window();
 		return win ? win.isActiveWindow() : false;
+	}
+
+	isRoot() {
+		return false;
+	}
+
+	root() {
+		if (this.isRoot()) return this;
+		if (!this.parent()) return null;
+		return this.parent().root();
 	}
 
 	window() {

@@ -1,5 +1,13 @@
 const termutils = {};
 
+termutils.textLength = function(str) {
+	return str.replace(/\u001b\[(?:\d{1,3})(?:;\d{1,3})*m/g, "").length;
+};
+
+termutils.splitByEscapeCodes = function(str) {
+	return str.split(/(\u001b\[(?:\d{1,3})(?:;\d{1,3})*m)/g);
+}
+
 termutils.drawHLine = function(term, cursorX, cursorY, length, char) {
 	term.moveTo(cursorX, cursorY);
 	term(char.repeat(length));

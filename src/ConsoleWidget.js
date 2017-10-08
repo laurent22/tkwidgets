@@ -12,6 +12,7 @@ class ConsoleWidget extends BaseWidget {
 		this.history_ = [];
 		this.initialText_ = '';
 		this.inputActive_ = false;
+		this.inputEventEmitter_ = null;
 	}
 
 	widgetType() {
@@ -104,6 +105,51 @@ class ConsoleWidget extends BaseWidget {
 		this.term().moveTo(this.promptCursorPos_.x, this.promptCursorPos_.y);
 	}
 
+	pause() {
+		if (!this.inputEventEmitter_) return;
+		this.inputEventEmitter_.pause();
+	}
+
+	resume() {
+		if (!this.inputEventEmitter_) return;
+		this.inputEventEmitter_.resume();
+	}
+
+	wrapLine(line, width) {
+		let fragments = termutils.splitByEscapeCodes(line);
+		let output = [];
+
+		let currentLine = '';
+		let currentWidth = 0;
+
+		for (let i = 0; i < fragments.length; i++) {
+			const fragment = fragments[i];
+
+			if (!termutils.textLength(f)) {
+				currentLine += fragment;
+			} else {
+				while (fragment.length > 0) {
+					if (currentWidth + fragment.length > width) {
+						const w = fragment.substr(0, width - currentWidth);
+						currentLine += w;
+						output.push(currentLine);
+						currentLine = '';
+						currentWidth = 0;
+						fragment = fragment.substr(w.length);
+					} else {
+						currentLine += fragment;
+						currentWidth += fragment.length;
+						fragment = '';
+					}
+				}
+			}
+		}
+
+		if (currentLine) output.push(currentLine);
+
+		return output;
+	}
+
 	render() {
 		super.render();
 
@@ -124,7 +170,10 @@ class ConsoleWidget extends BaseWidget {
 			if (lineIndex >= this.buffer_.length) break;
 
 			// Currently the line is simply cut to fit within the required
-			// width - i.e. not handling word wrap at the moment.s
+			// width - i.e. not handling word wrap at the moment.
+			// const wrappedLines = this.wrapLine(this.buffer_[lineIndex], innerWidth);
+			// for (let j = 0; 
+
 			let line = this.buffer_[lineIndex].substr(0, innerWidth);
 
 			term.moveTo(x, y);
@@ -159,9 +208,10 @@ class ConsoleWidget extends BaseWidget {
 			this.initialText_ = '';			
 			this.inputActive_ = true;
 
-			term.inputField(options, (error, input) => {
+			this.inputEventEmitter_ = term.inputField(options, (error, input) => {
 				termutils.showCursor(term, cursorWasShown);
 
+				this.inputEventEmitter_ = null;
 				this.inputActive_ = false;
 
 				if (error) {
