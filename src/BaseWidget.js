@@ -60,7 +60,6 @@ class BaseWidget {
 	onTermReady() {
 		if (this.canHaveFocus) {
 			this.term.on('key', (name, matches, data) => {
-				if (this.root && this.root.allInputDisabled) return;
 				if (!this.hasKeyboard) return;
 				this.onKey(name, matches, data);
 			});
@@ -321,12 +320,14 @@ class BaseWidget {
 	set height(v) {
 		if (this.size_.height === v) return;
 		this.size_.height = v;
+		this.onResize();
 		this.invalidate();
 	}
 
 	set width(v) {
 		if (this.size_.width === v) return;
 		this.size_.width = v;
+		this.onResize();
 		this.invalidate();
 	}
 

@@ -150,6 +150,10 @@ class ConsoleWidget extends BaseWidget {
 		return output;
 	}
 
+	get promptWidth_() {
+		return termutils.textLength(this.prompt);
+	}
+
 	render() {
 		super.render();
 
@@ -169,11 +173,6 @@ class ConsoleWidget extends BaseWidget {
 			let lineIndex = topBufferLineIndex + i;
 			if (lineIndex >= this.buffer_.length) break;
 
-			// Currently the line is simply cut to fit within the required
-			// width - i.e. not handling word wrap at the moment.
-			// const wrappedLines = this.wrapLine(this.buffer_[lineIndex], innerWidth);
-			// for (let j = 0; 
-
 			let line = this.buffer_[lineIndex].substr(0, innerWidth);
 
 			term.moveTo(x, y);
@@ -184,9 +183,9 @@ class ConsoleWidget extends BaseWidget {
 		const prompt = this.prompt;
 
 		term.moveTo(x, y);
-		term(prompt + ' '.repeat(innerWidth - prompt.length));
+		term(prompt + ' '.repeat(innerWidth - this.promptWidth_));
 
-		this.promptCursorPos_ = { x: x + prompt.length, y: y };
+		this.promptCursorPos_ = { x: x + this.promptWidth_, y: y };
 		term.moveTo(this.promptCursorPos_.x, this.promptCursorPos_.y);
 
 		if (this.hasFocus) {	

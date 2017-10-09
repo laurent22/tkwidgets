@@ -33,11 +33,23 @@ class ListWidget extends BaseWidget {
 	}
 
 	onKey(name, matches, data) {
+		super.onKey(name, matches, data);
+
 		if (name === 'UP') {
 			this.selectUp();
 		} else if (name == 'DOWN') {
 			this.selectDown();
 		}
+	}
+
+	onResize() {
+		super.onResize();
+
+		// Reset the top index so that the max/min value
+		// is re-applied to it.
+		const v = this.topIndex;
+		this.topIndex_ = 0;
+		this.topIndex = v;
 	}
 
 	get topIndex() {

@@ -5,7 +5,6 @@ class RootWidget extends BaseWidget {
 	constructor() {
 		super();
 		this.setStretch(true, true);
-		this.allInputDisabled_ = false;
 	}
 
 	get canHaveFocus() {
@@ -18,17 +17,6 @@ class RootWidget extends BaseWidget {
 
 	get isRoot() {
 		return true;
-	}
-
-	disableAllInput(v) {
-		if (this.allInputDisabled_ === v) return;
-		this.allInputDisabled_ = v;
-
-		this.logger().info('allInputDisabled_', this.allInputDisabled_);
-	}
-
-	get allInputDisabled() {
-		return this.allInputDisabled_;
 	}
 
 	onTermReady() {

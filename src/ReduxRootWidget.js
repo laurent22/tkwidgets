@@ -32,7 +32,12 @@ class ReduxRootWidget extends RootWidget {
 
 			for (let n in props) {
 				if (!props.hasOwnProperty(n)) continue;
-				c.widget[n] = props[n];
+
+				if (!(n in c.widget)) {
+					throw new Error('Widget "' + c.widget.name + '" does not have a property named "' + n + '".')
+				} else {
+					c.widget[n] = props[n];
+				}
 			}
 		}
 	}
