@@ -12,11 +12,11 @@ class TextWidget extends BaseWidget {
 		this.renderedMarkdown_ = '';
 	}
 
-	widgetType() {
+	get widgetType() {
 		return 'text';
 	}
 
-	canHaveFocus() {
+	get canHaveFocus() {
 		return true;
 	}
 
@@ -31,23 +31,23 @@ class TextWidget extends BaseWidget {
 		this.invalidate();
 	}
 
-	maxScrollTop_() {
+	get maxScrollTop_() {
 		if (!this.scrollableHeight_) return 0;
-		if (!this.innerHeight()) return 0;
-		return Math.max(this.scrollableHeight_ - this.innerHeight(), 0);
+		if (!this.innerHeight) return 0;
+		return Math.max(this.scrollableHeight_ - this.innerHeight, 0);
 	}
 
 	boundScrollTop_() {
-		let max = this.maxScrollTop_();
+		let max = this.maxScrollTop_;
 		if (this.scrollTop_ >= max) this.scrollTop_ = max;
 		if (this.scrollTop_ < 0) this.scrollTop_ = 0;
 	}
 
-	scrollTop() {
+	get scrollTop() {
 		return this.scrollTop_;
 	}
 
-	setScrollTop(v) {
+	set scrollTop(v) {
 		if (this.scrollTop_ === v) return;
 		this.scrollTop_ = v;
 		this.boundScrollTop_();
@@ -55,11 +55,11 @@ class TextWidget extends BaseWidget {
 	}
 
 	scrollUp() {
-		this.setScrollTop(this.scrollTop() - 1);
+		this.scrollTop = this.scrollTop - 1;
 	}
 
 	scrollDown() {
-		this.setScrollTop(this.scrollTop() + 1);
+		this.scrollTop = this.scrollTop + 1;
 	}
 
 	onKey(name, matches, data) {
@@ -78,13 +78,13 @@ class TextWidget extends BaseWidget {
 	render() {
 		super.render();
 
-		const term = this.term();
+		const term = this.term;
 
 		this.innerClear();
 
-		let x = this.absoluteInnerX();
-		let y = this.absoluteInnerY();
-		const innerWidth = this.innerWidth();
+		let x = this.absoluteInnerX;
+		let y = this.absoluteInnerY;
+		const innerWidth = this.innerWidths;
 
 		let text = this.text;
 
@@ -96,7 +96,7 @@ class TextWidget extends BaseWidget {
 				marked.setOptions({
 				 	renderer: new TerminalRenderer({
 						reflowText: true,
-						width: this.innerWidth(),
+						width: this.innerWidth,
 				 	})
 				});
 
@@ -113,13 +113,13 @@ class TextWidget extends BaseWidget {
 		this.scrollableHeight_ = lines.length;
 		this.boundScrollTop_();
 
-		for (let i = this.scrollTop(); i < lines.length; i++) {
+		for (let i = this.scrollTop; i < lines.length; i++) {
 			const line = lines[i];
 
 			term.moveTo(x, y);
 			term(line.substr(0, innerWidth));
 
-			if (y >= this.absoluteInnerY() + this.innerHeight() - 1) break;
+			if (y >= this.absoluteInnerY + this.innerHeight - 1) break;
 			y++;
 		}
 	}

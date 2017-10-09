@@ -11,11 +11,11 @@ class ReduxRootWidget extends RootWidget {
 		this.store_.subscribe(() => this.storeListener_());
 	}
 
-	canHaveFocus() {
+	get canHaveFocus() {
 		return false;
 	}
 
-	widgetType() {
+	get widgetType() {
 		return 'reduxRoot';
 	}
 

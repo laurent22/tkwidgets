@@ -7,7 +7,7 @@ class Renderer {
 		this.term_ = term;
 		this.root_ = root;
 		this.eventEmitter_ = new EventEmitter();
-		this.root_.setRenderer(this);
+		this.root_.renderer = this;
 		this.root_.onTermReady();
 	}
 
@@ -15,11 +15,11 @@ class Renderer {
 		return this.eventEmitter_.on(eventName, callback);
 	}
 
-	term() {
+	get term() {
 		return this.term_;
 	}
 
-	root() {
+	get root() {
 		return this.root_;
 	}
 
@@ -37,16 +37,16 @@ class Renderer {
 	}
 
 	async renderWidget(widget) {
-		if (widget.invalidated()) {
+		if (widget.invalidated) {
 
-			// This optional async willRender() method can be used
+			// This optional async onWillRender() method can be used
 			// by the widget to load any required data before the
 			// actual rendering. Rendering itself is always synchronous.
-			if (widget.willRender) {
-				await widget.willRender();
+			if (widget.onWillRender) {
+				await widget.onWillRender();
 			}
 
-			if (widget.visible()) {
+			if (widget.visible) {
 				widget.render();
 			} else {
 				widget.clear();
@@ -57,9 +57,9 @@ class Renderer {
 
 		let invisibleWidgets = [];
 		let visibleWidgets = [];
-		for (let i = 0; i < widget.childCount(); i++) {
+		for (let i = 0; i < widget.childCount; i++) {
 			var c = widget.childAt(i);
-			if (c.visible()) {
+			if (c.visible) {
 				visibleWidgets.push(c);
 			} else {
 				invisibleWidgets.push(c);
@@ -78,7 +78,7 @@ class Renderer {
 			this.renderTimeoutId_ = null;
 		}
 
-		await this.renderWidget(this.root());
+		await this.renderWidget(this.root);
 
 		this.eventEmitter_.emit('renderDone');
 	}

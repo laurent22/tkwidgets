@@ -28,7 +28,7 @@ class ListWidget extends BaseWidget {
 		this.invalidate();
 	}
 
-	widgetType() {
+	get widgetType() {
 		return 'list';
 	}
 
@@ -40,16 +40,16 @@ class ListWidget extends BaseWidget {
 		}
 	}
 
-	topIndex() {
+	get topIndex() {
 		return this.topIndex_;
 	}
 
-	bottomIndex() {
-		return this.topIndex_ + this.innerHeight() - 1;
+	get bottomIndex() {
+		return this.topIndex_ + this.innerHeight - 1;
 	}
 
-	setTopIndex(v) {
-		if (v > this.maxTopIndex()) v = this.maxTopIndex();
+	set topIndex(v) {
+		if (v > this.maxTopIndex) v = this.maxTopIndex;
 		if (v < 0) v = 0;
 		if (this.topIndex_ === v) return;
 
@@ -57,13 +57,13 @@ class ListWidget extends BaseWidget {
 		this.invalidate();
 	}
 
-	setBottomIndex(v) {
-		this.setTopIndex(v - this.innerHeight() + 1);
+	set bottomIndex(v) {
+		this.topIndex = v - this.innerHeight + 1;
 	}
 
-	maxTopIndex() {
-		if (this.items_.length <= this.innerHeight()) return 0;
-		return this.items_.length - this.innerHeight();
+	get maxTopIndex() {
+		if (this.items_.length <= this.innerHeight) return 0;
+		return this.items_.length - this.innerHeight;
 	}
 
 	selectUp() {
@@ -75,11 +75,11 @@ class ListWidget extends BaseWidget {
 	}
 
 	scrollDown() {
-		this.setTopIndex(this.topIndex_ + 1);
+		this.topIndex = this.topIndex_ + 1;
 	}
 
 	scrollUp() {
-		this.setTopIndex(this.topIndex_ - 1);
+		this.topIndex = this.topIndex_ - 1;
 	}
 
 	get currentIndex() {
@@ -93,10 +93,10 @@ class ListWidget extends BaseWidget {
 
 		this.currentIndex_ = v;
 
-		if (this.currentIndex_ < this.topIndex()) {
-			this.setTopIndex(this.currentIndex_);
-		} else if (this.currentIndex_ > this.bottomIndex()) {
-			this.setBottomIndex(this.currentIndex_);
+		if (this.currentIndex_ < this.topIndex) {
+			this.topIndex = this.currentIndex_;
+		} else if (this.currentIndex_ > this.bottomIndex) {
+			this.bottomIndex = this.currentIndex_;
 		}
 
 		this.onCurrentItemChange();
@@ -108,13 +108,6 @@ class ListWidget extends BaseWidget {
 		return i >= 0 && i < this.items_.length ? this.items_[i] : null;
 	}
 
-	setCurrentItem(v) {
-		const c = this.currentItem;
-		if (v === c) return;
-		this.items_[this.currentIndex] = v;
-		this.invalidate();
-	}
-
 	itemIndexByKey(key, value) {
 		for (let i = 0; i < this.items_.length; i++) {
 			const item = this.items_[i];
@@ -124,16 +117,20 @@ class ListWidget extends BaseWidget {
 	}
 
 	onCurrentItemChange() {
-		this.eventEmitter().emit('currentItemChange');
+		this.eventEmitter.emit('currentItemChange');
 	}
 
-	setItemRenderer(callback) {
+	get itemRenderer() {
+		return this.itemRenderer_;
+	}
+
+	set itemRenderer(callback) {
 		if (callback === this.itemRenderer_) return;
 		this.itemRenderer_ = callback;
 		this.invalidate();
 	}
 
-	itemMaxWidth() {
+	get itemMaxWidth() {
 		if (this.itemMaxWidth_ !== null) return this.itemMaxWidth_;
 
 		let output = 0;
@@ -160,16 +157,16 @@ class ListWidget extends BaseWidget {
 	render() {
 		super.render();
 
-		const term = this.term();
+		const term = this.term;
 
-		let cursorX = this.absoluteInnerX();
-		let cursorY = this.absoluteInnerY();
-		let itemWidth = this.innerWidth();
+		let cursorX = this.absoluteInnerX;
+		let cursorY = this.absoluteInnerY;
+		let itemWidth = this.innerWidth;
 		let viewHeight = 0;
 
 		this.innerClear();
 
-		for (let i = this.topIndex(); i <= this.bottomIndex(); i++) {
+		for (let i = this.topIndex; i <= this.bottomIndex; i++) {
 			if (i >= this.items_.length) break;
 			
 			let item = this.items_[i];
@@ -177,7 +174,7 @@ class ListWidget extends BaseWidget {
 			term.moveTo(cursorX, cursorY);
 
 			if (i == this.currentIndex) {
-				if (this.hasKeyboard()) {
+				if (this.hasKeyboard) {
 					term.bgWhite();
 					term.black();
 				} else {
@@ -195,7 +192,7 @@ class ListWidget extends BaseWidget {
 			cursorY++;
 			viewHeight++;
 
-			if (viewHeight > this.innerHeight()) {
+			if (viewHeight > this.innerHeight) {
 				break;
 			}
 		}

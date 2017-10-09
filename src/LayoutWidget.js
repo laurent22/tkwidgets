@@ -9,7 +9,7 @@ class LayoutWidget extends BaseWidget {
 	}
 
 	calculateSizes(sizeForStretch) {
-		let children = this.children();
+		let children = this.children;
 		let totalStretch = 0;
 		let stretchChildren = [];
 
@@ -72,29 +72,30 @@ class LayoutWidget extends BaseWidget {
 		this.invalidate();
 	}
 
-	canHaveFocus() {
+	get canHaveFocus() {
 		return false;
 	}
 
 	hvRender(direction) {
 		super.render();
 
-		const items = this.calculateSizes(direction == LayoutWidget.LAYOUT_HORIZONTAL ? this.innerWidth() : this.innerHeight());
-		const term = this.term();
-		let x = this.absoluteInnerX();
-		let y = this.absoluteInnerY();
+		const items = this.calculateSizes(direction == LayoutWidget.LAYOUT_HORIZONTAL ? this.innerWidth : this.innerHeight);
+		const term = this.term;
+		let x = this.absoluteInnerX;
+		let y = this.absoluteInnerY;
 
 		for (let i = 0; i < items.length; i++) {
 			const item = items[i];
 
 			term.moveTo(x, y);
 
-			item.widget.setLocation(x, y);
+			item.widget.x = x;
+			item.widget.y = y;
 
 			if (direction == LayoutWidget.LAYOUT_HORIZONTAL) {
-				item.widget.setWidth(item.size);
+				item.widget.width = item.size;
 			} else {
-				item.widget.setHeight(item.size);
+				item.widget.height = item.size;
 			}
 			
 			if (direction == LayoutWidget.LAYOUT_HORIZONTAL) {

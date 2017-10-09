@@ -235,7 +235,7 @@ function main() {
 		}
 
 		if (name == 't') {
-			if (win1.isActiveWindow()) {
+			if (win1.isActiveWindow) {
 				win2.activate();
 			} else {
 				win1.activate();

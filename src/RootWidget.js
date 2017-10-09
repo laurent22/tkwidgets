@@ -8,15 +8,15 @@ class RootWidget extends BaseWidget {
 		this.allInputDisabled_ = false;
 	}
 
-	canHaveFocus() {
+	get canHaveFocus() {
 		return false;
 	}
 
-	widgetType() {
+	get widgetType() {
 		return 'root';
 	}
 
-	isRoot() {
+	get isRoot() {
 		return true;
 	}
 
@@ -27,14 +27,14 @@ class RootWidget extends BaseWidget {
 		this.logger().info('allInputDisabled_', this.allInputDisabled_);
 	}
 
-	allInputDisabled() {
+	get allInputDisabled() {
 		return this.allInputDisabled_;
 	}
 
 	onTermReady() {
 		super.onTermReady();
 
-		this.term().on('resize', (width, height) => {
+		this.term.on('resize', (width, height) => {
 			this.onResize();
 		});
 	}

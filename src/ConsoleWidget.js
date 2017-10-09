@@ -15,15 +15,15 @@ class ConsoleWidget extends BaseWidget {
 		this.inputEventEmitter_ = null;
 	}
 
-	widgetType() {
+	get widgetType() {
 		return 'console';
 	}
 
-	canHaveFocus() {
+	get canHaveFocus() {
 		return true;		
 	}
 
-	tabIndex() {
+	get tabIndex() {
 		// A console can have the focus, but you cannot tab in or out of it
 		// because TAB might needed to be interpreted by it. Default key
 		// to exit the console is ESC.
@@ -38,14 +38,14 @@ class ConsoleWidget extends BaseWidget {
 
 	onFocus() {
 		super.onFocus();
-		this.window().disableFocusChange();
+		this.window.disableFocusChange();
 	}
 
-	prompt() {
+	get prompt() {
 		return this.prompt_;
 	}
 
-	history() {
+	get history() {
 		return this.history_;
 	}
 
@@ -56,10 +56,10 @@ class ConsoleWidget extends BaseWidget {
 
 		this.waitForResult_ = {
 			promise: null,
-			previousPrompt: this.prompt(),
+			previousPrompt: this.prompt,
 		};
 
-		this.setPrompt(message + ' ');
+		this.prompt = message + ' ';
 
 		this.waitForResult_.promise = new Promise((resolve, reject) => {
 			this.waitForResult_.resolve = resolve;
@@ -71,7 +71,7 @@ class ConsoleWidget extends BaseWidget {
 		return this.waitForResult_.promise;
 	}
 
-	setPrompt(v) {
+	set prompt(v) {
 		if (this.prompt_ === v) return;
 		this.prompt_ = v;
 		this.invalidate();
@@ -101,8 +101,8 @@ class ConsoleWidget extends BaseWidget {
 	// Convenience function to move the cursor back at the prompt. Useful when drawing something
 	// on the terminal (which moves the cursor around) while the console is active.
 	resetCursor() {
-		if (!this.hasFocus() || this.promptCursorPos_ === null) return;
-		this.term().moveTo(this.promptCursorPos_.x, this.promptCursorPos_.y);
+		if (!this.hasFocus || this.promptCursorPos_ === null) return;
+		this.term.moveTo(this.promptCursorPos_.x, this.promptCursorPos_.y);
 	}
 
 	pause() {
@@ -153,14 +153,14 @@ class ConsoleWidget extends BaseWidget {
 	render() {
 		super.render();
 
-		const term = this.term();
+		const term = this.term;
 
 		this.clear();
 
-		let x = this.absoluteX();
-		let y = this.absoluteY();
-		const innerWidth = this.innerWidth();
-		const innerHeight = this.innerHeight();
+		let x = this.absoluteX;
+		let y = this.absoluteY;
+		const innerWidth = this.innerWidth;
+		const innerHeight = this.innerHeight;
 
 		let topBufferLineIndex = this.buffer_.length - (innerHeight - 1);
 		if (topBufferLineIndex < 0) topBufferLineIndex = 0;
@@ -181,7 +181,7 @@ class ConsoleWidget extends BaseWidget {
 			y++;
 		}
 
-		const prompt = this.prompt();
+		const prompt = this.prompt;
 
 		term.moveTo(x, y);
 		term(prompt + ' '.repeat(innerWidth - prompt.length));
@@ -189,7 +189,7 @@ class ConsoleWidget extends BaseWidget {
 		this.promptCursorPos_ = { x: x + prompt.length, y: y };
 		term.moveTo(this.promptCursorPos_.x, this.promptCursorPos_.y);
 
-		if (this.hasFocus()) {	
+		if (this.hasFocus) {	
 
 			if (this.inputActive_) {
 				this.logger().warn('ConsoleWidget: Trying to activate input field while being already active');
@@ -201,7 +201,7 @@ class ConsoleWidget extends BaseWidget {
 
 			let options = {
 				cancelable: true,
-				history: this.history(),
+				history: this.history,
 				default: this.initialText_,
 			};
 
@@ -221,13 +221,13 @@ class ConsoleWidget extends BaseWidget {
 					this.waitForResult_ = null;
 
 					if (input === undefined) { // User cancel
-						this.window().enableFocusChange();
-						this.window().focusLast();
+						this.window.enableFocusChange();
+						this.window.focusLast();
 
 						if (wfr) {
 							wfr.resolve(null);
 						} else {
-							this.eventEmitter().emit('cancel');
+							this.eventEmitter.emit('cancel');
 						}
 					} else {
 						this.bufferPush(prompt + input);
@@ -236,12 +236,12 @@ class ConsoleWidget extends BaseWidget {
 							wfr.resolve(input);
 						} else {
 							if (input && input.trim() != '') this.history_.push(input);
-							this.eventEmitter().emit('accept', { input: input });
+							this.eventEmitter.emit('accept', { input: input });
 						}
 					}
 
 					if (wfr) {
-						this.setPrompt(wfr.previousPrompt);
+						this.prompt = wfr.previousPrompt;
 					}
 				}
 

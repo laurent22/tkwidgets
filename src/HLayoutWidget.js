@@ -7,7 +7,7 @@ class HLayoutWidget extends LayoutWidget {
 	}
 
 	addChild(widget, constraints) {
-		widget.setHStretch(false); // Once added to a layout, the size is managed by the layout
+		widget.hStretch  = false; // Once added to a layout, the size is managed by the layout
 		return super.addChild(widget, constraints);
 	}
 

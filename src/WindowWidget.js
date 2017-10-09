@@ -14,8 +14,8 @@ class WindowWidget extends BaseWidget {
 	onTermReady() {
 		super.onTermReady();
 
-		this.term().on('key', (name, matches, data) => {
-			if (!this.isActiveWindow()) return;
+		this.term.on('key', (name, matches, data) => {
+			if (!this.isActiveWindow) return;
 
 			if (this.focusChangeEnabled_ && name === 'TAB') {
 				this.tabNext();
@@ -36,24 +36,24 @@ class WindowWidget extends BaseWidget {
 		this.enableFocusChange(false);
 	}
 
-	isWindow() {
+	get isWindow() {
 		return true;
 	}
 
-	canHaveFocus() {
+	get canHaveFocus() {
 		return false;
 	}
 
-	widgetType() {
+	get widgetType() {
 		return 'window';
 	}
 
-	isActiveWindow() {
+	get isActiveWindow() {
 		return WindowWidget.activeWindow_ === this;
 	}
 
 	activate() {
-		if (this.isActiveWindow()) return;
+		if (this.isActiveWindow) return;
 
 		if (WindowWidget.activeWindow_) {
 			WindowWidget.activeWindow_.hide();
@@ -65,8 +65,8 @@ class WindowWidget extends BaseWidget {
 
 	searchTabableWidgets_(parent) {
 		let output = [];
-		if (parent.canHaveFocus() && parent.tabIndex() >= 0) output.push(parent);
-		for (let i = 0; i < parent.childCount(); i++) {
+		if (parent.canHaveFocus && parent.tabIndex >= 0) output.push(parent);
+		for (let i = 0; i < parent.childCount; i++) {
 			const child = parent.childAt(i);
 			let r = this.searchTabableWidgets_(child);
 			output = output.concat(r);			
@@ -138,10 +138,10 @@ class WindowWidget extends BaseWidget {
 	}
 
 	widgetHasKeyboard(widget) {
-		return widget && this.widgetHasFocus(widget) && widget.isActiveWindow() && widget.visible();
+		return widget && this.widgetHasFocus(widget) && widget.isActiveWindow && widget.visible;
 	}
 
-	focusedWidget() {
+	get focusedWidget() {
 		return this.focusedWidget_;
 	}
 
