@@ -1,4 +1,5 @@
 const BaseWidget = require('./BaseWidget.js');
+const markdownRenderer = require('./framework/markdownRenderer.js');
 
 class TextWidget extends BaseWidget {
 
@@ -84,24 +85,15 @@ class TextWidget extends BaseWidget {
 
 		let x = this.absoluteInnerX;
 		let y = this.absoluteInnerY;
-		const innerWidth = this.innerWidths;
+		const innerWidth = this.innerWidth;
 
 		let text = this.text;
 
 		if (this.markdownRendering_) {
 			if (this.updateMarkdown_) {
-				const marked = require('marked');
-				const TerminalRenderer = require('marked-terminal');
-
-				marked.setOptions({
-				 	renderer: new TerminalRenderer({
-						reflowText: true,
-						width: this.innerWidth,
-				 	})
-				});
-
-				text = marked(text);
-				this.renderedMarkdown_ = text.replace(/[\s\t\r\n]+$/, ''); // marked, or marked-terminal, seems to add newline characters at the end of the text so remove them here
+				// 'innerWidth - 1' because buggy Windows terminal doesn't handle
+				// unicode properly, and if cutting at the exact width, it will overflow the container
+				this.renderedMarkdown_ = markdownRenderer(text, { width: innerWidth - 1 });
 				this.updateMarkdown_ = false;
 			}
 

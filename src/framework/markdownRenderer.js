@@ -1,4 +1,4 @@
-const wrap = require('word-wrap');
+const termutils = require('./termutils.js');
 const chalk = require('chalk');
 
 function markdownRenderer(text, options = {}) {
@@ -6,12 +6,10 @@ function markdownRenderer(text, options = {}) {
 
 	const lines = text.split("\n");
 
-	const wrapOptions = { indent: '' };
-	if (options.width) wrapOptions.width = options.width;
 	const wrappedLines = [];
 	for (let i = 0; i < lines.length; i++) {
 		const line = lines[i];
-		wrappedLines.push(wrap(line, wrapOptions));
+		wrappedLines.push(termutils.wrap(line, options.width));
 	}
 
 	let context = {

@@ -162,7 +162,10 @@ class ListWidget extends BaseWidget {
 		if (labelWidth < width) {
 			return label + ' '.repeat(width - labelWidth);
 		} else {
-			return label.substr(0, width);
+			while (stringWidth(label) > width) {
+				label = label.substr(0, label.length - 1);
+			}
+			return label;
 		}
 	}
 

@@ -6,6 +6,6 @@
     "node-emoji": "^1.8.1",
     "string-width": "^2.1.1",
     "terminal-kit": "^1.13.11",
-    "word-wrap": "^1.2.3"
+    "wrap-ansi": "^3.0.1"
   }
 }

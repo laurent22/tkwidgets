@@ -308,14 +308,96 @@ const text10 = `
 Test \`this[isinline]\` code.
 `;
 
-const text11 = `A horizontal rule follows.
+const text11 = `我打算旅行，我想去中国的南边，因为那儿的天气不太冷。也我听说有很多意思的地方。特别是凤凰县（fèng huáng xiàn）：那儿有很老的城市。看起来美极了。也我想去上海。你呢？`;
+const text12 = `Subsequent paragraphsparagraphs are indented to show that they belong to the previous footnote.`;
 
-****`;
+
+const text13 = `
+Dialogue 口语
+
+L: 你好，我是洛弘。你叫什么名字？
+J:
+L:你是哪国人？
+J:
+L我是法国人。我在北京学习汉语。你呢？
+J:
+L你习惯北京的生活吗？
+J:
+L你习惯中国饭吗？
+J:
+L没问题，我习惯筷子。但是我还不习惯中国的饭，因为法国饭和中国反很不同。
+J:
+L我在四个月中国，你呢？
+J:
+L马达加斯加怎么样？
+J:
+L我去马达加斯加的话，我要去哪儿？
+J:
+L我是布列塔尼人，布列塔尼在法国的西北边。那儿有很漂亮的地方，特别是海岸。在布列塔尼有好吃的饭。薄饼(báo bǐng)，和苹果酒很有名。你呢？马达加斯加的饭怎么样？
+J:
+L在布列塔尼我习惯吃土豆(tǔ dòu)，牛肉，挂面(guà miàn)，奶酪，等等。你来中国一个人吗？
+J:
+L我来中国一个人。我的家人在法国。你的家人有几口人？
+J:
+L 我的家人有四口人：妈妈爸爸姐姐和我。他们都住在布列塔尼。我的姐姐有两个孩子：一个奴孩子和一个男孩子。
+J:
+L我打算旅行，我想去中国的南边，因为那儿的天气不太冷。也我听说有很多意思的地方。特别是凤凰县（fèng huáng xiàn）：那儿有很老的城市。看起来美极了。也我想去上海。你呢？
+J:
+L下学期你做什么？
+J:
+L对，下学期我也在清华大学学习汉语。你喜欢学习汉语吗？
+J:
+L我也喜欢学习汉语，我同意（tóng yì ）很难。但是觉得中国汉字有意思。我希望一天我能说和听懂汉语。
+J:
+L我觉得汉语越来越重要。
+J:
+L有空儿的时候，你做什么？
+J:
+L: 你去什么卡拉OK。在五道口有好的卡拉OK？
+J:
+L:这个有英语音乐吗？
+J:
+L: 你唱汉语还是英语歌？
+J:
+L 我喜欢游泳，看电影，看书，等等。也喜欢看我的朋友。我们一起打羽毛球（yǔ máo qiú ），去酒吧，吃饭，等等。我也喜欢起电动车看北京，但是现在不太好因为天气很冷。你有自行车吗？
+J:
+L: 为什么？
+J:
+L: 好的，明白。
+J:
+L: 我也很高兴认识你。再见。
+J: 再见。
+`;
 
 
-	console.info(markdownRenderer(text7, {
-		width: 40,
-	}));
+
+	// // const termWrap = function(line, width) {
+	// // 	let current = '';
+	// // 	let lines = [];
+	// // 	for (let i = 0; i < line.length; i++) {
+	// // 		current += line[i];
+	// // 		if (termutils.textLength(current) >= width) {
+	// // 			lines.push(current);
+	// // 			current = '';
+	// // 		}
+	// // 	}
+	// // 	return lines.join('\n');
+	// // }
+
+
+	const wrapAnsi = require('wrap-ansi');
+
+	console.info('0123456789');
+	console.info(wrapAnsi(text13, 10, { hard: true }));
+	console.info('0123456789');
+
+	// const wrap = require('wordwrap');
+	// console.info(wrap.hard(0, 0)(text10));
+
+
+	// console.info(markdownRenderer(text10, {
+	// 	width: 40,
+	// }));
 
 	// const md = require('markdown-it')();
 	// const tokens = md.parse(text9);
