@@ -2,11 +2,10 @@
   "name": "tkwidgets",
   "version": "0.5.3",
   "dependencies": {
-    "fs-extra": "^4.0.2",
-    "marked": "^0.3.6",
-    "marked-terminal": "https://github.com/laurent22/marked-terminal",
+    "chalk": "^2.1.0",
     "node-emoji": "^1.8.1",
     "string-width": "^2.1.1",
-    "terminal-kit": "^1.13.11"
+    "terminal-kit": "^1.13.11",
+    "word-wrap": "^1.2.3"
   }
 }
