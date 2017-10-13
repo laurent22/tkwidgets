@@ -78,6 +78,8 @@ class ConsoleWidget extends BaseWidget {
 	}
 
 	bufferPush(s) {
+		// this.logger().info('Push: ', s);
+
 		if (s === null || s === undefined) {
 			this.buffer_.push('');
 		} else if (Object.prototype.toString.call(s) === '[object Array]') {
@@ -173,17 +175,21 @@ class ConsoleWidget extends BaseWidget {
 			let lineIndex = topBufferLineIndex + i;
 			if (lineIndex >= this.buffer_.length) break;
 
-			let line = this.buffer_[lineIndex].substr(0, innerWidth);
+			//let line = this.buffer_[lineIndex].substr(0, innerWidth);
+
+			let line = this.buffer_[lineIndex];
+
+			// this.logger().info('write: ', line);
 
 			term.moveTo(x, y);
-			term(line);
+			term.write(line);
 			y++;
 		}
 
 		const prompt = this.prompt;
 
 		term.moveTo(x, y);
-		term(prompt + ' '.repeat(innerWidth - this.promptWidth_));
+		term.write(prompt + ' '.repeat(innerWidth - this.promptWidth_));
 
 		this.promptCursorPos_ = { x: x + this.promptWidth_, y: y };
 		term.moveTo(this.promptCursorPos_.x, this.promptCursorPos_.y);
@@ -195,8 +201,8 @@ class ConsoleWidget extends BaseWidget {
 				return;
 			}
 
-			const cursorWasShown = termutils.cursorShown(term);
-			termutils.showCursor(term);
+			const cursorWasShown = term.cursorShown;
+			term.showCursor();
 
 			let options = {
 				cancelable: true,
@@ -208,7 +214,7 @@ class ConsoleWidget extends BaseWidget {
 			this.inputActive_ = true;
 
 			this.inputEventEmitter_ = term.inputField(options, (error, input) => {
-				termutils.showCursor(term, cursorWasShown);
+				term.showCursor(cursorWasShown);
 
 				this.inputEventEmitter_ = null;
 				this.inputActive_ = false;

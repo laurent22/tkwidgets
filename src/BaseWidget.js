@@ -1,4 +1,3 @@
-const termutils = require('./framework/termutils.js');
 const EventEmitter = require('events');
 
 class BaseWidget {
@@ -433,19 +432,19 @@ class BaseWidget {
 		term.styleReset();
 
 		if (this.style.borderLeftWidth) {
-			termutils.drawVLine(term, x, y, height, vLineChar);
+			this.term.drawVLine(x, y, height, vLineChar);
 		}
 
 		if (this.style.borderRightWidth) {
-			termutils.drawVLine(term, x + width - 1, y, height, vLineChar);
+			this.term.drawVLine(x + width - 1, y, height, vLineChar);
 		}
 
 		if (this.style.borderTopWidth) {
-			termutils.drawHLine(term, x, y, width, hLineChar);
+			this.term.drawHLine(x, y, width, hLineChar);
 		}
 
 		if (this.style.borderBottomWidth) {
-			termutils.drawHLine(term, x, y + height - 1, width, hLineChar);
+			this.term.drawHLine(x, y + height - 1, width, hLineChar);
 		}
 	}
 

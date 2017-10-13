@@ -1,5 +1,4 @@
 const BaseWidget = require('./BaseWidget.js');
-const termutils = require('./framework/termutils.js');
 const stringWidth = require('string-width');
 const emoji = require('node-emoji');
 
@@ -202,7 +201,7 @@ class ListWidget extends BaseWidget {
 
 			const itemLabel = this.itemRenderer_ ? this.itemRenderer_(item) : item;
 			if (typeof itemLabel !== 'string') throw new Error('Non-string item list label at index ' + i);
-			term(this.formatItemLabel(itemLabel, itemWidth));
+			term.write(this.formatItemLabel(itemLabel, itemWidth));
 
 			cursorY++;
 			viewHeight++;

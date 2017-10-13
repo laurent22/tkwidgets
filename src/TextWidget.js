@@ -109,7 +109,7 @@ class TextWidget extends BaseWidget {
 			const line = lines[i];
 
 			term.moveTo(x, y);
-			term(line.substr(0, innerWidth));
+			term.write(line.substr(0, innerWidth));
 
 			if (y >= this.absoluteInnerY + this.innerHeight - 1) break;
 			y++;
