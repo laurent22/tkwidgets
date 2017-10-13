@@ -1,4 +1,5 @@
 const EventEmitter = require('events');
+const chalk = require('chalk');
 
 class BaseWidget {
 
@@ -405,14 +406,14 @@ class BaseWidget {
 	}
 
 	clear() {
-		this.term.styleReset();
+		chalk.reset();
 		for (let y = 0; y < this.height; y++) {
 			this.term.moveTo(this.x, this.y + y, ' '.repeat(this.width));
 		}
 	}
 
 	innerClear() {
-		this.term.styleReset();
+		chalk.reset();
 		for (let y = 0; y < this.innerHeight; y++) {
 			this.term.moveTo(this.innerX, this.innerY + y, ' '.repeat(this.innerWidth));
 		}
@@ -429,22 +430,22 @@ class BaseWidget {
 		const hLineChar = this.hasFocus ? '=' : '-';
 		const vLineChar = this.hasFocus ? '│' : '|';
 
-		term.styleReset();
+		chalk.reset();
 
 		if (this.style.borderLeftWidth) {
-			this.term.drawVLine(x, y, height, vLineChar);
+			term.drawVLine(x, y, height, vLineChar);
 		}
 
 		if (this.style.borderRightWidth) {
-			this.term.drawVLine(x + width - 1, y, height, vLineChar);
+			term.drawVLine(x + width - 1, y, height, vLineChar);
 		}
 
 		if (this.style.borderTopWidth) {
-			this.term.drawHLine(x, y, width, hLineChar);
+			term.drawHLine(x, y, width, hLineChar);
 		}
 
 		if (this.style.borderBottomWidth) {
-			this.term.drawHLine(x, y + height - 1, width, hLineChar);
+			term.drawHLine(x, y + height - 1, width, hLineChar);
 		}
 	}
 

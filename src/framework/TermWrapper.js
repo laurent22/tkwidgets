@@ -21,10 +21,6 @@ class TermWrapper {
 		}
 	}
 
-	format(s) {
-		return this.term.format(s);
-	}
-
 	fullscreen(enabled = true) {
 		return this.term.fullscreen(enabled);
 	}
@@ -73,28 +69,6 @@ class TermWrapper {
 
 	get height() {
 		return this.term.height;
-	}
-
-
-	// TODO: move to chalk;
-	bgWhite() {
-		return this.term.bgWhite();
-	}
-
-	bgBlack() {
-		return this.term.bgBlack();
-	}
-
-	bgColorGrayscale(n) {
-		return this.term.bgColorGrayscale(n);
-	}
-
-	black() {
-		return this.term.black();
-	}
-
-	styleReset() {
-		return this.term.styleReset();
 	}
 
 }

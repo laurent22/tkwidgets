@@ -1,6 +1,7 @@
 const BaseWidget = require('./BaseWidget.js');
 const stringWidth = require('string-width');
 const emoji = require('node-emoji');
+const chalk = require('chalk');
 
 class ListWidget extends BaseWidget {
 
@@ -187,21 +188,22 @@ class ListWidget extends BaseWidget {
 
 			term.moveTo(cursorX, cursorY);
 
+			let style = null;
+
 			if (i == this.currentIndex) {
 				if (this.hasKeyboard) {
-					term.bgWhite();
-					term.black();
+					style = chalk.bgWhite.black;
 				} else {
-					term.bgColorGrayscale(125);
-					term.black();
+					style = chalk.bgBlackBright.black;
 				}
 			} else {
-				term.styleReset();
+				chalk.reset();
 			}
 
 			const itemLabel = this.itemRenderer_ ? this.itemRenderer_(item) : item;
 			if (typeof itemLabel !== 'string') throw new Error('Non-string item list label at index ' + i);
-			term.write(this.formatItemLabel(itemLabel, itemWidth));
+			const stringToWrite = this.formatItemLabel(itemLabel, itemWidth);
+			term.write(style ? style(stringToWrite) : stringToWrite);
 
 			cursorY++;
 			viewHeight++;
@@ -211,7 +213,7 @@ class ListWidget extends BaseWidget {
 			}
 		}
 
-		term.styleReset();
+		chalk.reset();
 	}
 
 }
