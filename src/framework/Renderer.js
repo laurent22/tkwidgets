@@ -26,6 +26,10 @@ class Renderer {
 		this.scheduleRender();
 	}
 
+	async forceRender() {
+		await this.renderRoot();
+	}
+
 	scheduleRender() {
 		if (this.renderTimeoutId_) return;
 

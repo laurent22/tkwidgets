@@ -37,7 +37,7 @@ class TermWrapper {
 		return this.cursorShown_;
 	}
 
-	showCursor(doShow) {
+	showCursor(doShow = true) {
 		if (typeof doShow === 'undefined') doShow = true;
 		this.cursorShown_ = doShow;
 		this.term.hideCursor(!doShow);

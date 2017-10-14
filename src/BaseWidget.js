@@ -405,10 +405,22 @@ class BaseWidget {
 		return this.invalidated_;
 	}
 
-	clear() {
+	clear(size = null) {
+		let startX = this.x;
+		let startY = this.y;
+		let width = this.width;
+		let height = this.height;
+
+		if (size) {
+			if (size.x) startX = size.x;
+			if (size.y) startY = size.y;
+			if (size.width) width = size.width;
+			if (size.height) height = size.height;
+		}
+
 		chalk.reset();
-		for (let y = 0; y < this.height; y++) {
-			this.term.moveTo(this.x, this.y + y, ' '.repeat(this.width));
+		for (let y = 0; y < height; y++) {
+			this.term.moveTo(startX, startY + y, ' '.repeat(width));
 		}
 	}
 

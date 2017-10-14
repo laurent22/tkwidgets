@@ -13,6 +13,7 @@ class ConsoleWidget extends BaseWidget {
 		this.initialText_ = '';
 		this.inputActive_ = false;
 		this.inputEventEmitter_ = null;
+		this.promptVisible_ = true;
 	}
 
 	get widgetType() {
@@ -28,6 +29,16 @@ class ConsoleWidget extends BaseWidget {
 		// because TAB might needed to be interpreted by it. Default key
 		// to exit the console is ESC.
 		return -1;
+	}
+
+	get promptVisible() {
+		return this.promptVisible_;
+	}
+
+	set promptVisible(v) {
+		if (this.promptVisible_ === v) return;
+		this.promptVisible_ = v;
+		this.invalidate();
 	}
 
 	focus(initialText = null) {
@@ -60,6 +71,7 @@ class ConsoleWidget extends BaseWidget {
 		};
 
 		this.prompt = message + ' ';
+		this.promptVisible = true;
 
 		this.waitForResult_.promise = new Promise((resolve, reject) => {
 			this.waitForResult_.resolve = resolve;
@@ -67,6 +79,8 @@ class ConsoleWidget extends BaseWidget {
 		});
 
 		this.logger().debug('Doing waitForResult: ' + message);
+
+		this.invalidate();
 
 		return this.waitForResult_.promise;
 	}
@@ -78,8 +92,6 @@ class ConsoleWidget extends BaseWidget {
 	}
 
 	bufferPush(s) {
-		// this.logger().info('Push: ', s);
-
 		if (s === null || s === undefined) {
 			this.buffer_.push('');
 		} else if (Object.prototype.toString.call(s) === '[object Array]') {
@@ -104,7 +116,20 @@ class ConsoleWidget extends BaseWidget {
 	// on the terminal (which moves the cursor around) while the console is active.
 	resetCursor() {
 		if (!this.hasFocus || this.promptCursorPos_ === null) return;
-		this.term.moveTo(this.promptCursorPos_.x, this.promptCursorPos_.y);
+
+		let x = this.promptCursorPos_.x;
+		let y = this.promptCursorPos_.y;
+
+		// If the input is currently active, we simply rebase it to the
+		// new x/y coordinates and call redraw, which is going to repopulate
+		// the prompt with the command being currently typed, and move the
+		// cursor at the end of it.
+		if (this.inputEventEmitter_) {
+			this.inputEventEmitter_.rebase(x, y);
+			this.inputEventEmitter_.redraw();
+		} else {
+			this.term.moveTo(x, y);
+		}
 	}
 
 	pause() {
@@ -159,9 +184,11 @@ class ConsoleWidget extends BaseWidget {
 	render() {
 		super.render();
 
+		this.logger().info('Render console...');
+
 		const term = this.term;
 
-		this.clear();
+		this.clear({ height: this.height - 1 });
 
 		let x = this.absoluteX;
 		let y = this.absoluteY;
@@ -188,16 +215,25 @@ class ConsoleWidget extends BaseWidget {
 
 		const prompt = this.prompt;
 
-		term.moveTo(x, y);
-		term.write(prompt + ' '.repeat(innerWidth - this.promptWidth_));
+		if (this.promptVisible) {
+			term.moveTo(x, y);
+			term.write(prompt + ' '.repeat(innerWidth - this.promptWidth_));
 
-		this.promptCursorPos_ = { x: x + this.promptWidth_, y: y };
-		term.moveTo(this.promptCursorPos_.x, this.promptCursorPos_.y);
+			this.promptCursorPos_ = { x: x + this.promptWidth_, y: y };
+			term.moveTo(this.promptCursorPos_.x, this.promptCursorPos_.y);
 
-		if (this.hasFocus) {	
+			this.resetCursor();
+		}
+
+		this.logger().info('Showing console: ', this.hasFocus, this.promptVisible);
+
+		if (this.hasFocus && this.promptVisible) {	
 
 			if (this.inputActive_) {
-				this.logger().warn('ConsoleWidget: Trying to activate input field while being already active');
+				// Since the input is already active, we don't call term.inputField again or
+				// that would make two of them active at the same time. The call to resetCursor()
+				// above ensures that the cursor is where it should and that the current
+				// command is correctly displayed when the widget is re-rendered.
 				return;
 			}
 
