@@ -63,11 +63,25 @@ class TextWidget extends BaseWidget {
 		this.scrollTop = this.scrollTop + 1;
 	}
 
+	pageUp() {
+		this.scrollTop -= this.innerHeight;
+	}
+
+	pageDown() {
+		this.scrollTop += this.innerHeight;
+	}
+
 	onKey(name, matches, data) {
+		super.onKey(name, matches, data);
+
 		if (name === 'UP') {
 			this.scrollUp();
-		} else if (name == 'DOWN') {
+		} else if (name === 'DOWN') {
 			this.scrollDown();
+		} else if (name === 'PAGE_UP') {
+			this.pageUp();
+		} else if (name === 'PAGE_DOWN') {
+			this.pageDown();
 		}
 	}
 

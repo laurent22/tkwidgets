@@ -46,6 +46,23 @@ function inlineHeaderLevel(line) {
 	return 0;
 }
 
+function headerLevelStyle(level, isAlreadyUnderlined) {
+	if (!level) return chalk.white;
+
+	let levelToColor = ['magenta', 'green', 'cyan', 'yellow'];
+
+	const i = level - 1;
+	const color = i >= levelToColor.length ? levelToColor[levelToColor.length - 1] : levelToColor[i];
+
+	let output = chalk[color];
+
+	if (!output) throw new Error('Invalid color: ' + color + ' (' + i + ')');
+
+	if (!isAlreadyUnderlined) output = output.underline;
+
+	return output;
+}
+
 function isQuote(line) {
 	return line.indexOf('> ') === 0 || line === '>';
 }
@@ -57,11 +74,13 @@ function renderLine(line, nextLine, context) {
 	const nextLineHeaderLevel = headerUnderlineLevel(nextLine);
 
 	if (lineHeaderLevel || nextLineHeaderLevel) {
-		return chalk.yellow(line);
+		const level = lineHeaderLevel ? lineHeaderLevel : nextLineHeaderLevel;
+		return headerLevelStyle(level, true)(line);
 	}
 
-	if (inlineHeaderLevel(line)) {
-		return chalk.yellow(line);
+	const inlineLevel = inlineHeaderLevel(line);
+	if (inlineLevel) {
+		return headerLevelStyle(inlineLevel, false)(line);
 	}
 
 	if (isQuote(line)) {

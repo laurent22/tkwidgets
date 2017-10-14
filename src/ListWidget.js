@@ -37,8 +37,12 @@ class ListWidget extends BaseWidget {
 
 		if (name === 'UP') {
 			this.selectUp();
-		} else if (name == 'DOWN') {
+		} else if (name === 'DOWN') {
 			this.selectDown();
+		} else if (name === 'PAGE_UP') {
+			this.pageUp();
+		} else if (name === 'PAGE_DOWN') {
+			this.pageDown();
 		}
 	}
 
@@ -84,6 +88,14 @@ class ListWidget extends BaseWidget {
 
 	selectDown() {
 		this.currentIndex = this.currentIndex + 1;
+	}
+
+	pageUp() {
+		this.currentIndex -= this.innerHeight;
+	}
+
+	pageDown() {
+		this.currentIndex += this.innerHeight;
 	}
 
 	scrollDown() {

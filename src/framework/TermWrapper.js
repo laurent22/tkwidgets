@@ -47,6 +47,14 @@ class TermWrapper {
 		this.showCursor(false);
 	}
 
+	saveState() {
+		return { cursorShown: this.cursorShown };
+	}
+
+	restoreState(state) {
+		this.showCursor(this.cursorShown);
+	}
+
 	inputField(options, callback) {
 		return this.term.inputField(options, callback);
 	}
