@@ -17,6 +17,8 @@ class LayoutWidget extends BaseWidget {
 
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
+			if (!child.visible) continue;
+			
 			const constraints = this.widgetConstraints(child);
 
 			if (constraints.type == 'fixed') {

@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "slice-ansi": "^1.0.0"
+  }
+}

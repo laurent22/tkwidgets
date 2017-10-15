@@ -78,7 +78,7 @@ class WindowWidget extends BaseWidget {
 
 	searchTabableWidgets_(parent) {
 		let output = [];
-		if (parent.canHaveFocus && parent.tabIndex >= 0) output.push(parent);
+		if (parent.canHaveFocus && parent.tabIndex >= 0 && parent.visible) output.push(parent);
 		for (let i = 0; i < parent.childCount; i++) {
 			const child = parent.childAt(i);
 			let r = this.searchTabableWidgets_(child);

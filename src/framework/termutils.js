@@ -13,7 +13,8 @@ termutils.containsDoubleByte = function(str) {
 }
 
 termutils.textLength = function(str) {
-	return stringWidth(str.replace(/\u001b\[(?:\d{1,3})(?:;\d{1,3})*m/g, ""));
+	return stringWidth(str);
+	//return stringWidth(str.replace(/\u001b\[(?:\d{1,3})(?:;\d{1,3})*m/g, ""));
 };
 
 termutils.wrap = function(line, width) {

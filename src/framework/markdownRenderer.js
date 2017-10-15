@@ -63,8 +63,16 @@ function headerLevelStyle(level, isAlreadyUnderlined) {
 	return output;
 }
 
+function isSpace(char) {
+	return char === ' ' || char === ' ';
+}
+
 function isQuote(line) {
-	return line.indexOf('> ') === 0 || line === '>';
+	if (line.indexOf('>') === 0) {
+		if (line.length === 1) return true;
+		return isSpace(line[1]);
+	}
+	return false;
 }
 
 function renderLine(line, nextLine, context) {
@@ -126,7 +134,7 @@ function renderLine(line, nextLine, context) {
 		}
 
 		if (!inBold && !inEm && !inCode) {
-			if (c === '*' && nextC === '*' && nextNextC !== ' ') {
+			if (c === '*' && nextC === '*' && !isSpace(nextNextC)) {
 				inBold = true;
 				output.push(currentPiece);
 				currentPiece = '';
@@ -134,14 +142,14 @@ function renderLine(line, nextLine, context) {
 				continue;
 			}
 
-			if (c === '*' && nextC !== ' ') {
+			if (c === '*' && isSpace(nextC)) {
 				inEm = true;
 				output.push(currentPiece);
 				currentPiece = '';
 				continue;
 			}
 
-			if (c === '`' && nextC !== ' ') {
+			if (c === '`' && isSpace(nextC)) {
 				inCode = true;
 				output.push(currentPiece);
 				currentPiece = '';

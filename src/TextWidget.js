@@ -1,5 +1,6 @@
 const BaseWidget = require('./BaseWidget.js');
 const markdownRenderer = require('./framework/markdownRenderer.js');
+const sliceAnsi = require('slice-ansi');
 
 class TextWidget extends BaseWidget {
 
@@ -11,6 +12,7 @@ class TextWidget extends BaseWidget {
 		this.scrollableHeight_ = 0;
 		this.updateMarkdown_ = false;
 		this.renderedMarkdown_ = '';
+		this.stickToBottom_ = false;
 	}
 
 	get widgetType() {
@@ -29,6 +31,24 @@ class TextWidget extends BaseWidget {
 		if (this.text_ === v) return;
 		this.text_ = v;
 		this.updateMarkdown_ = true;
+		this.invalidate();
+	}
+
+	get stickToBottom() {
+		return this.stickToBottom_;
+	}
+
+	set stickToBottom(v) {
+		this.stickToBottom_ = v;
+		this.invalidate();
+	}
+
+	get markdownRendering() {
+		return this.markdownRendering_;
+	}
+
+	set markdownRendering(v) {
+		this.markdownRendering_ = v;
 		this.invalidate();
 	}
 
@@ -61,6 +81,10 @@ class TextWidget extends BaseWidget {
 
 	scrollDown() {
 		this.scrollTop = this.scrollTop + 1;
+	}
+
+	scrollBottom() {
+		this.scrollTop = this.scrollableHeight_;
 	}
 
 	pageUp() {
@@ -117,13 +141,14 @@ class TextWidget extends BaseWidget {
 		const lines = text.split("\n");
 
 		this.scrollableHeight_ = lines.length;
+		if (this.stickToBottom_) this.scrollTop_ = this.scrollableHeight_;
 		this.boundScrollTop_();
 
 		for (let i = this.scrollTop; i < lines.length; i++) {
 			const line = lines[i];
 
 			term.moveTo(x, y);
-			term.write(line.substr(0, innerWidth));
+			term.write(sliceAnsi(line, 0, innerWidth - 1));
 
 			if (y >= this.absoluteInnerY + this.innerHeight - 1) break;
 			y++;
