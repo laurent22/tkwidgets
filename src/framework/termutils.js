@@ -2,6 +2,7 @@ const termutils = {};
 
 const stringWidth = require('string-width');
 const wrapAnsi = require('wrap-ansi');
+const emoji = require('node-emoji');
 
 // https://stackoverflow.com/a/46719196/561309
 const containsDoubleByteRegex = /[^\u0000-\u00ff]/;
@@ -21,6 +22,11 @@ termutils.wrap = function(line, width) {
 
 termutils.splitByEscapeCodes = function(str) {
 	return str.split(/(\u001b\[(?:\d{1,3})(?:;\d{1,3})*m)/g);
+}
+
+termutils.toPlainText = function(str) {
+	// Windows terminals also can't render the € symbol, so convert it too
+	return emoji.unemojify(str).replace(/€/g, ':euro:');
 }
 
 module.exports = termutils;

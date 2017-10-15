@@ -1,6 +1,7 @@
 const BaseWidget = require('./BaseWidget.js');
 const stringWidth = require('string-width');
-const emoji = require('node-emoji');
+const termutils = require('./framework/termutils.js');
+
 const chalk = require('chalk');
 
 class ListWidget extends BaseWidget {
@@ -25,6 +26,11 @@ class ListWidget extends BaseWidget {
 		this.items_ = v;
 		this.itemMaxWidth_ = null;
 		this.currentIndex_ = this.items_.length ? 0 : -1;
+		this.invalidate();
+	}
+
+	addItem(v) {
+		this.items_.push(v);
 		this.invalidate();
 	}
 
@@ -106,6 +112,10 @@ class ListWidget extends BaseWidget {
 		this.topIndex = this.topIndex_ - 1;
 	}
 
+	scrollBottom() {
+		this.bottomIndex = this.items_.length - 1;
+	}
+
 	get currentIndex() {
 		return this.currentIndex_;
 	}
@@ -169,7 +179,7 @@ class ListWidget extends BaseWidget {
 		// be reliably determined) so convert them to plain text. Maybe emojis could
 		// be enabled depending on the terminal or operating system (it might
 		// work on MacOS).
-		label = emoji.unemojify(label).trim();
+		label = termutils.toPlainText(label).trim();
 		const labelWidth = stringWidth(label);
 		if (labelWidth < width) {
 			return label + ' '.repeat(width - labelWidth);

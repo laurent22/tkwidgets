@@ -4,7 +4,7 @@ const chalk = require('chalk');
 function markdownRenderer(text, options = {}) {
 	if (!options.width) options.width = null;
 
-	const lines = text.split("\n");
+	const lines = termutils.toPlainText(text).split("\n");
 
 	const wrappedLines = [];
 	for (let i = 0; i < lines.length; i++) {

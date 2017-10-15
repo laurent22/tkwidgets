@@ -61,6 +61,7 @@ class BaseWidget {
 		if (this.canHaveFocus) {
 			this.term.on('key', (name, matches, data) => {
 				if (!this.hasKeyboard) return;
+				if (this.root.globalKeyboardDisabledFor(this)) return;
 				this.onKey(name, matches, data);
 			});
 		}

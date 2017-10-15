@@ -9,6 +9,10 @@ class TermWrapper {
 		return this.term_;
 	}
 
+	get innerStyle() {
+		return this.term;
+	}
+
 	drawHLine(cursorX, cursorY, length, char) {
 		this.moveTo(cursorX, cursorY);
 		this.write(char.repeat(length));

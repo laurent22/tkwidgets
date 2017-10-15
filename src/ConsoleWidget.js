@@ -184,8 +184,6 @@ class ConsoleWidget extends BaseWidget {
 	render() {
 		super.render();
 
-		this.logger().info('Render console...');
-
 		const term = this.term;
 
 		this.clear({ height: this.height - 1 });
@@ -224,8 +222,6 @@ class ConsoleWidget extends BaseWidget {
 
 			this.resetCursor();
 		}
-
-		this.logger().info('Showing console: ', this.hasFocus, this.promptVisible);
 
 		if (this.hasFocus && this.promptVisible) {	
 

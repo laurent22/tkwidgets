@@ -16,6 +16,7 @@ class WindowWidget extends BaseWidget {
 
 		this.term.on('key', (name, matches, data) => {
 			if (!this.isActiveWindow) return;
+			if (this.root.globalKeyboardDisabledFor(this)) return;
 
 			if (this.focusChangeEnabled_ && name === 'TAB') {
 				this.tabNext();
@@ -26,6 +27,18 @@ class WindowWidget extends BaseWidget {
 			}
 		});
 	}
+
+	// onKey(name, matches, data) {
+	// 	if (!this.isActiveWindow) return;
+
+	// 	if (this.focusChangeEnabled_ && name === 'TAB') {
+	// 		this.tabNext();
+	// 	}
+
+	// 	if (this.focusChangeEnabled_ && name === 'SHIFT_TAB') {
+	// 		this.tabPrevious();
+	// 	}
+	// }
 
 	enableFocusChange(doEnable) {
 		if (typeof doEnable === 'undefined') doEnable = true;
@@ -138,6 +151,7 @@ class WindowWidget extends BaseWidget {
 	}
 
 	widgetHasKeyboard(widget) {
+		//if (widget === this) return true;
 		return widget && this.widgetHasFocus(widget) && widget.isActiveWindow && widget.visible;
 	}
 
