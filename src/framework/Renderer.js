@@ -72,7 +72,7 @@ class Renderer {
 		let children = invisibleWidgets.concat(visibleWidgets);
 		for (let i = 0; i < children.length; i++) {
 			this.renderWidget(children[i]);
-		}		
+		}
 	}
 
 	async renderRoot() {

@@ -1,9 +1,10 @@
 {
   "name": "tkwidgets",
-  "version": "0.5.6",
+  "version": "0.5.9",
   "dependencies": {
     "chalk": "^2.1.0",
     "node-emoji": "^1.8.1",
+    "slice-ansi": "^1.0.0",
     "string-width": "^2.1.1",
     "terminal-kit": "^1.13.11",
     "wrap-ansi": "^3.0.1"

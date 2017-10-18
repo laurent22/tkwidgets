@@ -13,6 +13,14 @@ class TermWrapper {
 		return this.term;
 	}
 
+	saveCursor() {
+		return this.term.saveCursor();
+	}
+
+	restoreCursor() {
+		return this.term.restoreCursor();
+	}
+
 	drawHLine(cursorX, cursorY, length, char) {
 		this.moveTo(cursorX, cursorY);
 		this.write(char.repeat(length));

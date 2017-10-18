@@ -1,5 +1,6 @@
 const BaseWidget = require('./BaseWidget.js');
 const markdownRenderer = require('./framework/markdownRenderer.js');
+const termutils = require('./framework/termutils.js');
 const sliceAnsi = require('slice-ansi');
 
 class TextWidget extends BaseWidget {
@@ -10,8 +11,8 @@ class TextWidget extends BaseWidget {
 		this.text_ = '';
 		this.scrollTop_ = 0;
 		this.scrollableHeight_ = 0;
-		this.updateMarkdown_ = false;
-		this.renderedMarkdown_ = '';
+		this.updateDisplayedText_ = false;
+		this.renderedText_ = '';
 		this.stickToBottom_ = false;
 	}
 
@@ -30,7 +31,7 @@ class TextWidget extends BaseWidget {
 	set text(v) {
 		if (this.text_ === v) return;
 		this.text_ = v;
-		this.updateMarkdown_ = true;
+		this.updateDisplayedText_ = true;
 		this.invalidate();
 	}
 
@@ -110,7 +111,7 @@ class TextWidget extends BaseWidget {
 	}
 
 	onSizeChange() {
-		this.updateMarkdown_ = true;
+		this.updateDisplayedText_ = true;
 		this.invalidate();
 	}
 
@@ -119,26 +120,34 @@ class TextWidget extends BaseWidget {
 
 		const term = this.term;
 
+		term.saveCursor();
+
 		this.innerClear();
 
 		let x = this.absoluteInnerX;
 		let y = this.absoluteInnerY;
 		const innerWidth = this.innerWidth;
 
-		let text = this.text;
+		let textToDisplay = this.text;
+
+		// 'innerWidth - 1' because buggy Windows terminal doesn't handle unicode
+		//  properly, and if cutting at the exact width, it will overflow the container
+		const textMaxWidth = innerWidth - 1;
 
 		if (this.markdownRendering_) {
-			if (this.updateMarkdown_) {
-				// 'innerWidth - 1' because buggy Windows terminal doesn't handle
-				// unicode properly, and if cutting at the exact width, it will overflow the container
-				this.renderedMarkdown_ = markdownRenderer(text, { width: innerWidth - 1 });
-				this.updateMarkdown_ = false;
+			if (this.updateDisplayedText_) {
+				this.renderedText_ = markdownRenderer(textToDisplay, { width: textMaxWidth });
+				this.updateDisplayedText_ = false;
 			}
-
-			text = this.renderedMarkdown_;
+		} else {
+			if (this.updateDisplayedText_) {
+				this.renderedText_ = termutils.wrapLines(textToDisplay, textMaxWidth);
+			}
 		}
 
-		const lines = text.split("\n");
+		textToDisplay = this.renderedText_;
+
+		const lines = textToDisplay.split("\n");
 
 		this.scrollableHeight_ = lines.length;
 		if (this.stickToBottom_) this.scrollTop_ = this.scrollableHeight_;
@@ -153,6 +162,8 @@ class TextWidget extends BaseWidget {
 			if (y >= this.absoluteInnerY + this.innerHeight - 1) break;
 			y++;
 		}
+
+		term.restoreCursor();
 	}
 
 }

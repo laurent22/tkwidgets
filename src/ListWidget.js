@@ -23,9 +23,17 @@ class ListWidget extends BaseWidget {
 	set items(v) {
 		if (this.items_ === v) return;
 
+		let selectedItem = this.selectedItem_;
+
 		this.items_ = v;
 		this.itemMaxWidth_ = null;
-		this.currentIndex_ = this.items_.length ? 0 : -1;
+		this.currentIndex_ = -1; // Make sure list state is refreshed properly when calling this.currentIndex below
+
+		// Restore selection if item still exists in the list
+		let newIndex = this.itemIndex_(selectedItem);
+		if (this.items_.length && newIndex < 0) newIndex = 0;
+		this.currentIndex = newIndex;
+
 		this.invalidate();
 	}
 
@@ -36,6 +44,21 @@ class ListWidget extends BaseWidget {
 
 	get widgetType() {
 		return 'list';
+	}
+
+	// This is private because it retuns the actual object (not a copy) and, if modified,
+	// the changes will not be reflected in the list.
+	get selectedItem_() {
+		if (this.currentIndex < 0) return null;
+		if (this.currentIndex >= this.items.length) return null;
+		return this.items[this.currentIndex];
+	}
+
+	itemIndex_(item) {
+		for (let i = 0; i < this.items.length; i++) {
+			if (this.items[i] === item) return i;
+		}
+		return -1;
 	}
 
 	onKey(name, matches, data) {
@@ -116,6 +139,11 @@ class ListWidget extends BaseWidget {
 		this.bottomIndex = this.items_.length - 1;
 	}
 
+	get currentItemVisible_() {
+		const i = this.currentIndex;
+		return i >= this.topIndex && i <= this.bottomIndex;
+	}
+
 	get currentIndex() {
 		return this.currentIndex_;
 	}
@@ -131,6 +159,10 @@ class ListWidget extends BaseWidget {
 			this.topIndex = this.currentIndex_;
 		} else if (this.currentIndex_ > this.bottomIndex) {
 			this.bottomIndex = this.currentIndex_;
+		}
+
+		if (!this.currentItemVisible_) {
+			this.topIndex = this.currentIndex_;
 		}
 
 		this.onCurrentItemChange();
@@ -196,6 +228,8 @@ class ListWidget extends BaseWidget {
 
 		const term = this.term;
 
+		term.saveCursor();
+
 		let cursorX = this.absoluteInnerX;
 		let cursorY = this.absoluteInnerY;
 		let itemWidth = this.innerWidth;
@@ -223,7 +257,7 @@ class ListWidget extends BaseWidget {
 			}
 
 			const itemLabel = this.itemRenderer_ ? this.itemRenderer_(item) : item;
-			if (typeof itemLabel !== 'string') throw new Error('Non-string item list label at index ' + i);
+			if (typeof itemLabel !== 'string') itemLabel = '<NOT-A-STRING-' + i + '>';
 			const stringToWrite = this.formatItemLabel(itemLabel, itemWidth);
 			term.write(style ? style(stringToWrite) : stringToWrite);
 
@@ -236,6 +270,8 @@ class ListWidget extends BaseWidget {
 		}
 
 		chalk.reset();
+
+		term.restoreCursor();
 	}
 
 }

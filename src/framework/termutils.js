@@ -17,8 +17,16 @@ termutils.textLength = function(str) {
 	//return stringWidth(str.replace(/\u001b\[(?:\d{1,3})(?:;\d{1,3})*m/g, ""));
 };
 
-termutils.wrap = function(line, width) {
+termutils.wrapLine = function(line, width) {
 	return wrapAnsi(line, width, { hard: true });
+}
+
+termutils.wrapLines = function(linesString, width) {
+	let output = linesString.split('\n');
+	for (let i = 0; i < output.length; i++) {
+		output[i] = termutils.wrapLine(output[i], width);
+	}
+	return output.join('\n');
 }
 
 termutils.splitByEscapeCodes = function(str) {

@@ -165,6 +165,18 @@ class BaseWidget {
 		return null;
 	}
 
+	childByType(type, recurse = true) {
+		for (let i = 0; i < this.childCount; i++) {
+			let child = this.childAt(i);
+			if (child.name == name) return child;
+			if (recurse) {
+				let c = child.childByName(name);
+				if (c) return c;
+			}
+		}
+		return null;
+	}
+
 	get id() {
 		return this.id_;
 	}
@@ -469,7 +481,9 @@ class BaseWidget {
 			this.onSizeChanged();
 		}
 
+		this.term.saveCursor();
 		this.drawBorder();
+		this.term.restoreCursor();
 
 		this.previousRenderSize_ = { innerWidth: this.innerWidth, innerHeight: this.innerHeight };
 	}

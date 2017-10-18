@@ -9,7 +9,7 @@ function markdownRenderer(text, options = {}) {
 	const wrappedLines = [];
 	for (let i = 0; i < lines.length; i++) {
 		const line = lines[i];
-		wrappedLines.push(termutils.wrap(line, options.width));
+		wrappedLines.push(termutils.wrapLine(line, options.width));
 	}
 
 	let context = {
