@@ -54,6 +54,7 @@ class LayoutWidget extends BaseWidget {
 	}
 
 	addChild(widget, constraints) {
+		if (!widget || !constraints) throw new Error('Widget and constraints are required');
 		this.constraints_.push({ widget: widget, constraints: constraints });
 		return super.addChild(widget);
 	}
@@ -83,13 +84,12 @@ class LayoutWidget extends BaseWidget {
 
 		const items = this.calculateSizes(direction == LayoutWidget.LAYOUT_HORIZONTAL ? this.innerWidth : this.innerHeight);
 		const term = this.term;
-		let x = this.absoluteInnerX;
-		let y = this.absoluteInnerY;
+
+		let x = 1;
+		let y = 1;
 
 		for (let i = 0; i < items.length; i++) {
 			const item = items[i];
-
-			term.moveTo(x, y);
 
 			item.widget.x = x;
 			item.widget.y = y;

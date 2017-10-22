@@ -77,6 +77,10 @@ class BaseWidget {
 		this.lifeCycleState_ = 'ready';
 	}
 
+	get fullName() {
+		return this.parent ? this.parent.fullName + '.' + this.name : this.name;
+	}
+
 	onResize() {
 		this.invalidate();
 	}
@@ -440,7 +444,7 @@ class BaseWidget {
 	innerClear() {
 		chalk.reset();
 		for (let y = 0; y < this.innerHeight; y++) {
-			this.term.moveTo(this.innerX, this.innerY + y, ' '.repeat(this.innerWidth));
+			this.term.moveTo(this.absoluteInnerX, this.absoluteInnerY + y, ' '.repeat(this.innerWidth));
 		}
 	}
 
