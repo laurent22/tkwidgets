@@ -18,7 +18,10 @@ termutils.textLength = function(str) {
 };
 
 termutils.wrapLine = function(line, width) {
-	return wrapAnsi(line, width, { hard: true });
+	return wrapAnsi(line, width, {
+		hard: true,
+		trim: false,
+	});
 }
 
 termutils.wrapLines = function(linesString, width) {

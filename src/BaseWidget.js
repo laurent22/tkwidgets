@@ -229,6 +229,10 @@ class BaseWidget {
 		if (this.shown_ === doShow) return;
 		this.shown_ = doShow;
 		this.invalidate();
+
+		// Invalidate parent too so that, for example, in the case of a layout
+		// it can re-layout its children.
+		if (this.parent) this.parent.invalidate();
 	}
 
 	hide() {
@@ -456,10 +460,22 @@ class BaseWidget {
 		let width = this.width;
 		let height = this.height;
 
-		const hLineChar = this.hasFocus ? '=' : '-';
-		const vLineChar = this.hasFocus ? '│' : '|';
-
 		chalk.reset();
+
+		const focusStyle = chalk.white;
+		const unfocusStyle = chalk.gray;
+		const style = this.hasFocus ? focusStyle : unfocusStyle;
+
+		const hLineChar = this.hasFocus ? focusStyle('-') : unfocusStyle('.');
+		const vLineChar = this.hasFocus ? focusStyle('│') : unfocusStyle('|');
+
+		if (this.style.borderTopWidth) {
+			term.drawHLine(x, y, width, hLineChar);
+		}
+
+		if (this.style.borderBottomWidth) {
+			term.drawHLine(x, y + height - 1, width, hLineChar);
+		}
 
 		if (this.style.borderLeftWidth) {
 			term.drawVLine(x, y, height, vLineChar);
@@ -469,12 +485,14 @@ class BaseWidget {
 			term.drawVLine(x + width - 1, y, height, vLineChar);
 		}
 
-		if (this.style.borderTopWidth) {
-			term.drawHLine(x, y, width, hLineChar);
+		if (this.style.borderBottomWidth && this.style.borderLeftWidth) {
+			term.moveTo(x, y + height - 1);
+			term.write(style('\''));
 		}
 
-		if (this.style.borderBottomWidth) {
-			term.drawHLine(x, y + height - 1, width, hLineChar);
+		if (this.style.borderBottomWidth && this.style.borderRightWidth) {
+			term.moveTo(x + width - 1, y + height - 1);
+			term.write(style('\''));
 		}
 	}
 
