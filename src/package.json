@@ -1,9 +1,9 @@
 {
   "name": "tkwidgets",
-  "version": "0.5.11",
+  "version": "0.5.12",
   "dependencies": {
     "chalk": "^2.1.0",
-    "node-emoji": "^1.8.1",
+    "node-emoji": "https://github.com/laurent22/node-emoji",
     "slice-ansi": "^1.0.0",
     "string-width": "^2.1.1",
     "terminal-kit": "^1.13.11",

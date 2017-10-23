@@ -29,6 +29,7 @@ class ListWidget extends BaseWidget {
 		this.itemMaxWidth_ = null;
 		this.currentIndex_ = -1; // Make sure list state is refreshed properly when calling this.currentIndex below
 
+
 		// Restore selection if item still exists in the list
 		let newIndex = this.itemIndex_(selectedItem);
 		if (this.items_.length && newIndex < 0) newIndex = 0;
@@ -64,6 +65,8 @@ class ListWidget extends BaseWidget {
 	onKey(name, matches, data) {
 		super.onKey(name, matches, data);
 
+		const previousIndex = this.currentIndex;
+
 		if (name === 'UP') {
 			this.selectUp();
 		} else if (name === 'DOWN') {
@@ -72,6 +75,10 @@ class ListWidget extends BaseWidget {
 			this.pageUp();
 		} else if (name === 'PAGE_DOWN') {
 			this.pageDown();
+		}
+
+		if (previousIndex !== this.currentIndex) {
+			this.onCurrentItemChange();
 		}
 	}
 
@@ -165,7 +172,6 @@ class ListWidget extends BaseWidget {
 			this.topIndex = this.currentIndex_;
 		}
 
-		this.onCurrentItemChange();
 		this.invalidate();
 	}
 
@@ -183,6 +189,7 @@ class ListWidget extends BaseWidget {
 	}
 
 	onCurrentItemChange() {
+		// Note: this must only be dispatched as a result of a user interaction
 		this.eventEmitter.emit('currentItemChange');
 	}
 
@@ -256,7 +263,7 @@ class ListWidget extends BaseWidget {
 				chalk.reset();
 			}
 
-			const itemLabel = this.itemRenderer_ ? this.itemRenderer_(item) : item;
+			let itemLabel = this.itemRenderer_ ? this.itemRenderer_(item) : item;
 			if (typeof itemLabel !== 'string') itemLabel = '<NOT-A-STRING-' + i + '>';
 			const stringToWrite = this.formatItemLabel(itemLabel, itemWidth);
 			term.write(style ? style(stringToWrite) : stringToWrite);
