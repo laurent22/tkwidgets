@@ -78,7 +78,10 @@ class ListWidget extends BaseWidget {
 		}
 
 		if (previousIndex !== this.currentIndex) {
-			this.onCurrentItemChange();
+			this.onCurrentItemChange({
+				previousIndex: previousIndex,
+				currentIndex: this.currentIndex,
+			});
 		}
 	}
 
@@ -90,6 +93,11 @@ class ListWidget extends BaseWidget {
 		const v = this.topIndex;
 		this.topIndex_ = 0;
 		this.topIndex = v;
+	}
+
+	itemAt(index) {
+		if (index < 0 || index >= this.items.length) return null;
+		return this.items[index];
 	}
 
 	get topIndex() {
@@ -188,9 +196,9 @@ class ListWidget extends BaseWidget {
 		return -1;
 	}
 
-	onCurrentItemChange() {
+	onCurrentItemChange(event) {
 		// Note: this must only be dispatched as a result of a user interaction
-		this.eventEmitter.emit('currentItemChange');
+		this.eventEmitter.emit('currentItemChange', event);
 	}
 
 	get itemRenderer() {
