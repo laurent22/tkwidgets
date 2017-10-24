@@ -4,6 +4,10 @@ const chalk = require('chalk');
 function markdownRenderer(text, options = {}) {
 	if (!options.width) options.width = null;
 
+	if (options.linkUrlRenderer) {
+		text = addResourceLinks(text, options.linkUrlRenderer);
+	}
+
 	const lines = termutils.toPlainText(text).split("\n");
 
 	const wrappedLines = [];
@@ -14,6 +18,7 @@ function markdownRenderer(text, options = {}) {
 
 	let context = {
 		isCode: false,
+		options: options,
 	};
 
 	for (let i = 0; i < wrappedLines.length; i++) {
@@ -168,6 +173,14 @@ function renderLine(line, nextLine, context) {
 	}
 
 	return output.join('');
+}
+
+function addResourceLinks(text, linkUrlRenderer) {
+	// [link text](:/ddfc0cdbbe6948709419cb53585a2214)
+	const linkUrlRegex = /\[(.*?)\]\((.*?)\)/gi;
+	return text.replace(linkUrlRegex, function(match, p1, p2) {
+		return '[' + p1 + '](' + linkUrlRenderer(p2) + ')';
+	});
 }
 
 function isCodeBlockMarker(line) {

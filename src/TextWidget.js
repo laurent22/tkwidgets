@@ -14,6 +14,7 @@ class TextWidget extends BaseWidget {
 		this.updateDisplayedText_ = false;
 		this.renderedText_ = '';
 		this.stickToBottom_ = false;
+		this.markdownRendererOptions_ = {};
 	}
 
 	get widgetType() {
@@ -37,6 +38,17 @@ class TextWidget extends BaseWidget {
 
 	get stickToBottom() {
 		return this.stickToBottom_;
+	}
+
+	get markdownRendererOptions() {
+		return this.markdownRendererOptions_;
+	}
+
+	set markdownRendererOptions(v) {
+		if (this.markdownRendererOptions_ === v) return;
+		this.markdownRendererOptions_ = v;
+		this.updateDisplayedText_ = true;
+		this.invalidate();
 	}
 
 	set stickToBottom(v) {
@@ -110,7 +122,9 @@ class TextWidget extends BaseWidget {
 		}
 	}
 
-	onSizeChange() {
+	onSizeChanged() {
+		super.onSizeChanged();
+		
 		this.updateDisplayedText_ = true;
 		this.invalidate();
 	}
@@ -136,7 +150,8 @@ class TextWidget extends BaseWidget {
 
 		if (this.markdownRendering_) {
 			if (this.updateDisplayedText_) {
-				this.renderedText_ = markdownRenderer(textToDisplay, { width: textMaxWidth });
+				const options = Object.assign({}, this.markdownRendererOptions, { width: textMaxWidth });
+				this.renderedText_ = markdownRenderer(textToDisplay, options);
 				this.updateDisplayedText_ = false;
 			}
 		} else {
