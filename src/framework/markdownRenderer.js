@@ -177,9 +177,10 @@ function renderLine(line, nextLine, context) {
 
 function addResourceLinks(text, linkUrlRenderer) {
 	// [link text](:/ddfc0cdbbe6948709419cb53585a2214)
+	let linkIndex = 0;
 	const linkUrlRegex = /\[(.*?)\]\((.*?)\)/gi;
 	return text.replace(linkUrlRegex, function(match, p1, p2) {
-		return '[' + p1 + '](' + linkUrlRenderer(p2) + ')';
+		return '[' + p1.trim() + '](' + linkUrlRenderer(linkIndex++, p2.trim()) + ')';
 	});
 }
 
