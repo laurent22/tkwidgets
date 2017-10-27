@@ -132,7 +132,7 @@ function renderLine(line, nextLine, context) {
 		if (inCode) {
 			if (c === '`') {
 				inCode = false;
-				output.push(chalk.blue('`' + currentPiece + '`'));
+				output.push(chalk.cyan('`' + currentPiece + '`'));
 				currentPiece = '';
 				continue;
 			}
@@ -147,14 +147,14 @@ function renderLine(line, nextLine, context) {
 				continue;
 			}
 
-			if (c === '*' && isSpace(nextC)) {
+			if (c === '*' && !isSpace(nextC)) {
 				inEm = true;
 				output.push(currentPiece);
 				currentPiece = '';
 				continue;
 			}
 
-			if (c === '`' && isSpace(nextC)) {
+			if (c === '`' && !isSpace(nextC)) {
 				inCode = true;
 				output.push(currentPiece);
 				currentPiece = '';
@@ -179,8 +179,16 @@ function addResourceLinks(text, linkUrlRenderer) {
 	// [link text](:/ddfc0cdbbe6948709419cb53585a2214)
 	let linkIndex = 0;
 	const linkUrlRegex = /\[(.*?)\]\((.*?)\)/gi;
+	const urlTitleRegex = /(.*?)\s+"(.*?)"/; // i.e. for link like [Belgium](https://simple.wikipedia.org/wiki/Belgium "Belgium")
 	return text.replace(linkUrlRegex, function(match, p1, p2) {
-		return '[' + p1.trim() + '](' + linkUrlRenderer(linkIndex++, p2.trim()) + ')';
+		let url = p2.trim();
+
+		const urlTitleMatches = url.match(urlTitleRegex);
+		// For now discard the "title" part of a link
+		if (urlTitleMatches && urlTitleMatches.length > 1) url = urlTitleMatches[1];
+
+		url = linkUrlRenderer(linkIndex++, url);
+		return url ? '[' + p1.trim() + '](' + url + ')' : p1.trim();
 	});
 }
 
