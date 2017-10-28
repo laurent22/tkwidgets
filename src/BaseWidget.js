@@ -23,6 +23,7 @@ class BaseWidget {
 		this.vStretch_ = false;
 		this.eventEmitter_ = null;
 		this.tabIndex_ = 0;
+		this.asyncActions_ = {};
 
 		this.invalidate();
 	}
@@ -36,6 +37,29 @@ class BaseWidget {
 		};
 
 		return BaseWidget.logger_;
+	}
+
+	// Utility method to define an async action that will be executed
+	// a few milliseconds later. This is useful when an event is happening
+	// multiple times (such as loading an item while a list is scrolling)
+	// but you want a related action (such as loading an item) to happen
+	// only once things are stable.
+	// 
+	// For example:
+	// `this.doAsync('loadItem', callback)` could be called whenever
+	// the list is being scrolled but the actual callback will be called
+	// only once the scrolling has finished. This is because each new call
+	// to doAsync() overwrites any already scheduled action.
+	doAsync(name, callback) {
+		if (this.asyncActions_[name]) {
+			clearTimeout(this.asyncActions_[name]);
+			delete this.asyncActions_[name];
+		}
+
+		this.asyncActions_[name] = setTimeout(() => {
+			delete this.asyncActions_[name];
+			callback();
+		}, 100);	
 	}
 
 	on(eventName, callback) {
@@ -497,6 +521,8 @@ class BaseWidget {
 	}
 
 	render() {
+		this.logger().debug('Render: ' + this.name);
+
 		if (this.previousRenderSize_ === null) this.previousRenderSize_ = { innerWidth: this.innerWidth, innerHeight: this.innerHeight };
 
 		if (this.previousRenderSize_.innerWidth != this.innerWidth || this.previousRenderSize_.innerHeight != this.innerHeight) {

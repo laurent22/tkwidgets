@@ -34,8 +34,8 @@ class Renderer {
 		if (this.renderTimeoutId_) return;
 
 		this.renderTimeoutId_ = setTimeout(async () => {
-			this.renderTimeoutId_ = null;
 			await this.renderRoot();
+			this.renderTimeoutId_ = null;
 		}, 30);
 	}
 
@@ -71,7 +71,7 @@ class Renderer {
 
 		let children = invisibleWidgets.concat(visibleWidgets);
 		for (let i = 0; i < children.length; i++) {
-			this.renderWidget(children[i]);
+			await this.renderWidget(children[i]);
 		}
 	}
 

@@ -1,6 +1,6 @@
 {
   "name": "tkwidgets",
-  "version": "0.5.16",
+  "version": "0.5.17",
   "dependencies": {
     "chalk": "^2.1.0",
     "node-emoji": "https://github.com/laurent22/node-emoji",
