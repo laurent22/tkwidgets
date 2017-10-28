@@ -1,3 +1,6 @@
+const tk = require('terminal-kit');
+const ScreenWrapper = require('./ScreenWrapper.js');
+
 class TermWrapper {
 
 	constructor(term) {
@@ -89,6 +92,14 @@ class TermWrapper {
 
 	get height() {
 		return this.term.height;
+	}
+
+	createScreenBuffer(width, height) {
+		return new ScreenWrapper(tk.ScreenBuffer.create({
+			width: width,
+			height: height,
+			dst: this.term,
+		}));
 	}
 
 }
