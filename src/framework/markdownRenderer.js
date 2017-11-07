@@ -8,7 +8,14 @@ function markdownRenderer(text, options = {}) {
 		text = addResourceLinks(text, options.linkUrlRenderer);
 	}
 
-	const lines = termutils.toPlainText(text).split("\n");
+	text = termutils.toPlainText(text);
+
+	// Currently the preRender step is only used for syntax highlighting since
+	// it needs the entire text to render. Everything else is rendered line
+	// by line.
+	text = preRender(text, options);
+
+	const lines = text.split("\n");
 
 	const wrappedLines = [];
 	for (let i = 0; i < lines.length; i++) {
@@ -34,6 +41,59 @@ function markdownRenderer(text, options = {}) {
 	}
 
 	return wrappedLines.join('\n');
+}
+
+function preRender(text) {
+	// Optimization: if there's no code block, we can exit now.
+	if (!containsCodeBlock(text)) return text;
+
+	const emphasize = require('emphasize');
+
+	const lines = text.split("\n");
+
+	const renderCodeBlock = function(language, codeBlock) {
+		let codeText = codeBlock.join("\n");
+		if (language) {
+			codeText = emphasize.highlight(language, codeText).value;
+		} else {
+			codeText = emphasize.highlightAuto(codeText).value;
+		}
+		return codeText.split("\n");
+	}
+
+	let output = [];
+	let inCodeBlock = false;
+	let codeBlockLanguage = null;
+
+	let currentCodeBlock = [];
+	for (let i = 0; i < lines.length; i++) {
+		const line = lines[i];
+
+		if (isCodeBlockMarker(line)) {
+			inCodeBlock = !inCodeBlock;
+			codeBlockLanguage = codeBlockMarkerLanguage(line);
+			if (inCodeBlock) {
+				currentCodeBlock = [];
+			} else {
+				output = output.concat(renderCodeBlock(codeBlockLanguage, currentCodeBlock));
+				currentCodeBlock = [];
+			}
+			output.push(line);
+			continue;
+		}
+
+		if (inCodeBlock) {
+			currentCodeBlock.push(line);
+		} else {
+			output.push(line);
+		}
+	}
+
+	if (currentCodeBlock.length) {
+		output = output.concat(renderCodeBlock(codeBlockLanguage, currentCodeBlock));
+	}
+
+	return output.join('\n');
 }
 
 function headerUnderlineLevel(line) {
@@ -81,7 +141,7 @@ function isQuote(line) {
 }
 
 function renderLine(line, nextLine, context) {
-	if (context.isCode) return isCodeBlockMarker(line) ? line : chalk.blue(line);
+	if (context.isCode) return line; // It has already been rendered in preRender()
 
 	const lineHeaderLevel = headerUnderlineLevel(line);
 	const nextLineHeaderLevel = headerUnderlineLevel(nextLine);
@@ -99,6 +159,8 @@ function renderLine(line, nextLine, context) {
 	if (isQuote(line)) {
 		return chalk.gray(line);
 	}
+
+	if (isCodeBlockMarker(line)) return line;
 
 	let output = [];
 	let inBold = false;
@@ -192,8 +254,17 @@ function addResourceLinks(text, linkUrlRenderer) {
 	});
 }
 
+function containsCodeBlock(text) {
+	return text.indexOf('~~~') >= 0 || text.indexOf('```') >= 0;
+}
+
 function isCodeBlockMarker(line) {
-	return line.indexOf('~~~') === 0;
+	return line.indexOf('~~~') === 0 || line.indexOf('```') === 0;
+}
+
+function codeBlockMarkerLanguage(line) {
+	if (!isCodeBlockMarker(line)) return null;
+	return line.substr(3).trim();
 }
 
 function blockType(line) {
