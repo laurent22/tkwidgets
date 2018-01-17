@@ -521,7 +521,7 @@ class BaseWidget {
 	}
 
 	render() {
-		this.logger().debug('Render: ' + this.name);
+		// this.logger().debug('Render: ' + this.name);
 
 		if (this.previousRenderSize_ === null) this.previousRenderSize_ = { innerWidth: this.innerWidth, innerHeight: this.innerHeight };
 

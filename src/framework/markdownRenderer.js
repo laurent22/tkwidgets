@@ -53,11 +53,18 @@ function preRender(text) {
 
 	const renderCodeBlock = function(language, codeBlock) {
 		let codeText = codeBlock.join("\n");
-		if (language) {
-			codeText = emphasize.highlight(language, codeText).value;
-		} else {
-			codeText = emphasize.highlightAuto(codeText).value;
+
+		try {
+			if (language) {
+				codeText = emphasize.highlight(language, codeText).value;
+			} else {
+				codeText = emphasize.highlightAuto(codeText).value;
+			}
+		} catch (error) {
+			// Happens for example when specified language is not registered
+			return 'ERROR: Following code block cannot be displayed correctly due to: ' + error.message + "\n\n" + codeBlock;
 		}
+
 		return codeText.split("\n");
 	}
 
