@@ -18,11 +18,11 @@ class WindowWidget extends BaseWidget {
 			if (!this.isActiveWindow) return;
 			if (this.root.globalKeyboardDisabledFor(this)) return;
 
-			if (this.focusChangeEnabled_ && name === 'TAB') {
+			if (this.focusChangeEnabled_ && (name === 'TAB' || name === 'RIGHT')) {
 				this.tabNext();
 			}
 
-			if (this.focusChangeEnabled_ && name === 'SHIFT_TAB') {
+			if (this.focusChangeEnabled_ && (name === 'SHIFT_TAB' || name === 'LEFT')) {
 				this.tabPrevious();
 			}
 		});
