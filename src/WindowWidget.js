@@ -11,34 +11,23 @@ class WindowWidget extends BaseWidget {
 		this.setStretch(true, true);
 	}
 
-	onTermReady() {
-		super.onTermReady();
+	// The windows overrides the handleKey() function directly (instead of using onKey) because
+	// the conditions for keys to be active are slightly different. In particular it doesn't
+	// have the focus but still handle meta keys like TAB.
+	handleKey(name, matches, data) {
+		super.handleKey(name, matches, data);
 
-		this.term.on('key', (name, matches, data) => {
-			if (!this.isActiveWindow) return;
-			if (this.root.globalKeyboardDisabledFor(this)) return;
+		if (!this.isActiveWindow) return;
+		if (this.root.globalKeyboardDisabledFor(this)) return;
 
-			if (this.focusChangeEnabled_ && name === 'TAB') {
-				this.tabNext();
-			}
+		if (this.focusChangeEnabled_ && name === 'TAB') {
+			this.tabNext();
+		}
 
-			if (this.focusChangeEnabled_ && name === 'SHIFT_TAB') {
-				this.tabPrevious();
-			}
-		});
+		if (this.focusChangeEnabled_ && name === 'SHIFT_TAB') {
+			this.tabPrevious();
+		}
 	}
-
-	// onKey(name, matches, data) {
-	// 	if (!this.isActiveWindow) return;
-
-	// 	if (this.focusChangeEnabled_ && name === 'TAB') {
-	// 		this.tabNext();
-	// 	}
-
-	// 	if (this.focusChangeEnabled_ && name === 'SHIFT_TAB') {
-	// 		this.tabPrevious();
-	// 	}
-	// }
 
 	enableFocusChange(doEnable) {
 		if (typeof doEnable === 'undefined') doEnable = true;

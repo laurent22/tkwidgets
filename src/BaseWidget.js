@@ -81,12 +81,25 @@ class BaseWidget {
 		return this.eventEmitter_;
 	}
 
+	handleKey(name, matches = null, data = null) {
+		for (let i = 0; i < this.childCount; i++) {
+			const child = this.childAt(i);
+			child.handleKey(name);
+		}
+
+		this.logger().debug('Handle: ' + this.name + ': ' + name, this.hasKeyboard);
+
+		if (!this.hasKeyboard) return;
+		if (this.root.globalKeyboardDisabledFor(this)) return;
+
+		this.onKey(name, matches, data);
+	}
+
 	onTermReady() {
 		if (this.canHaveFocus) {
 			this.term.on('key', (name, matches, data) => {
-				if (!this.hasKeyboard) return;
-				if (this.root.globalKeyboardDisabledFor(this)) return;
-				this.onKey(name, matches, data);
+				if (!this.root.autoShortcutsEnabled) return;
+				this.handleKey(name, matches, data);
 			});
 		}
 

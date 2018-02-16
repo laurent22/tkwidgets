@@ -6,6 +6,7 @@ class RootWidget extends BaseWidget {
 		super();
 		this.setStretch(true, true);
 		this.disableKeyboardSource_ = null;
+		this.autoShortcutsEnabled_ = true;
 	}
 
 	get canHaveFocus() {
@@ -50,6 +51,17 @@ class RootWidget extends BaseWidget {
 		this.term.on('resize', (width, height) => {
 			this.onResize();
 		});
+	}
+
+	// By settting this to "false" it is possible to handle the shortcuts at the application-level
+	// by calling handleKey() manually.
+	get autoShortcutsEnabled() {
+		return this.autoShortcutsEnabled_;
+	}
+
+	set autoShortcutsEnabled(v) {
+		if (this.autoShortcutsEnabled_ === v) return;
+		this.autoShortcutsEnabled_ = v;
 	}
 
 }
