@@ -1,6 +1,6 @@
 {
   "name": "tkwidgets",
-  "version": "0.5.21",
+  "version": "0.5.25",
   "dependencies": {
     "chalk": "^2.1.0",
     "emphasize": "^1.5.0",
