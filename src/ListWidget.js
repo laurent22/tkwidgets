@@ -14,6 +14,7 @@ class ListWidget extends BaseWidget {
 		this.topIndex_ = 0;
 		this.itemMaxWidth_ = null;
 		this.itemRenderer_ = null;
+		this.trimItemTitle_ = true;
 	}
 
 	get items() {
@@ -35,6 +36,15 @@ class ListWidget extends BaseWidget {
 		if (this.items_.length && newIndex < 0) newIndex = 0;
 		this.currentIndex = newIndex;
 
+		this.invalidate();
+	}
+
+	get trimItemTitle() {
+		return this.trimItemTitle_;
+	}
+
+	set trimItemTitle(v) {
+		this.trimItemTitle_ = v;
 		this.invalidate();
 	}
 
@@ -226,7 +236,8 @@ class ListWidget extends BaseWidget {
 		// be reliably determined) so convert them to plain text. Maybe emojis could
 		// be enabled depending on the terminal or operating system (it might
 		// work on MacOS).
-		label = termutils.toPlainText(label).trim();
+		label = termutils.toPlainText(label);
+		if (this.trimItemTitle) label = label.trim();
 		const labelWidth = stringWidth(label);
 		if (labelWidth < width) {
 			return label + ' '.repeat(width - labelWidth);
